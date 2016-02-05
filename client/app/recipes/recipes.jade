@@ -1,0 +1,9 @@
+
+.container
+    .row(ng-repeat='recipe in recipes.list')
+        .col.s12.m6.l3
+            .hoverable.card
+                section.card-image
+                    img(src='assets/images/yeoman.png')
+                section.card-content
+                    span {{ recipe.title }}
