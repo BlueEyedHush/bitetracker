@@ -20,6 +20,10 @@ $fa-font-path: "../bower_components/font-awesome/fonts";
   }
 }
 
+#logo-container {
+  margin-left: 20px;
+}
+
 // Component styles are injected through grunt
 // injector
 @import 'admin/admin';
