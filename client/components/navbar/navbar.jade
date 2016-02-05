@@ -7,6 +7,9 @@ nav.cyan.lighten-1(role='navigation')
                 li(ng-repeat='item in nav.menu', ui-sref-active='active')
                     a(ui-sref='{{ item.state }}') {{ item.title }}
 
+                li(ng-show='nav.isLoggedIn()', ng-repeat='item in nav.userMenu', ui-sref-active='active')
+                    a(ui-sref='{{ item.state }}') {{ item.title }}
+
                 li(ng-show='nav.isAdmin()', ui-sref-active='active')
                     a(ui-sref='admin') Admin
 

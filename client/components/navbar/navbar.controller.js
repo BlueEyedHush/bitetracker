@@ -6,6 +6,10 @@ class NavbarController {
     'title': 'Home',
     'state': 'main'
   }];
+  userMenu = [{
+    'title': 'Recipes',
+    'state': 'recipes'
+  }];
 
   isCollapsed = true;
   //end-non-standard
