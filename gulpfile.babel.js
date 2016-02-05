@@ -332,6 +332,8 @@ gulp.task('watch', () => {
 
     plugins.watch(paths.client.views)
         .pipe(plugins.plumber())
+        .pipe(plugins.jade({ pretty: true }))
+        .pipe(gulp.dest('.tmp'))
         .pipe(plugins.livereload());
 
     plugins.watch(paths.client.scripts) //['inject:js']
