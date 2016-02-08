@@ -6,10 +6,7 @@
 
     constructor($http, $scope, socket) {
       this.$http = $http;
-      this.list = [{
-        title: 'Recipe',
-        body: 'Stuff'
-      }];
+      this.list = [];
 
       $http.get('/api/recipes').then(response => {
         this.list = response.data;

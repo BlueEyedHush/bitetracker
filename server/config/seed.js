@@ -4,6 +4,7 @@
  */
 
 'use strict';
+import Recipe from '../api/recipe/recipe.model';
 import Thing from '../api/thing/thing.model';
 import User from '../api/user/user.model';
 
@@ -55,5 +56,24 @@ User.find({}).removeAsync()
     })
     .then(() => {
       console.log('finished populating users');
+
+      User.where({ name: 'Test User' })
+          .findOneAsync()
+          .then(function (user) {
+            Recipe.find({}).removeAsync()
+                .then(() => {
+                  Recipe.create({
+                    title: 'Spaghetti Bolognese',
+                    author: user._id
+                  }, {
+                    title: 'Spaghetti Carbonara',
+                    author: user._id
+                  }, {
+                    title: 'Spaghetti and Meatballs',
+                    author: user._id
+                  })
+                });
+          });
     });
   });
+
