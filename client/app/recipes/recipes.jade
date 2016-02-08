@@ -1,7 +1,7 @@
 
 .container
-    .row(ng-repeat='recipe in recipes.list')
-        .col.s12.m6.l3
+    .row
+        .col.s12.m6.l3(ng-repeat='recipe in vm.list')
             .hoverable.card
                 section.card-image
                     img(ng-src='assets/images/recipes/{{ recipe.image }}')

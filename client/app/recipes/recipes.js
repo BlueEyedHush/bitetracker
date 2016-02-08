@@ -7,7 +7,7 @@ angular.module('foodDiaryApp')
         url: '/recipes',
         templateUrl: 'app/recipes/recipes.html',
         controller: 'RecipesController',
-        controllerAs: 'recipes',
+        controllerAs: 'vm',
         authenticate: true
       });
   });
