@@ -17,13 +17,4 @@ angular.module('foodDiaryApp', [
       .otherwise('/');
 
     $locationProvider.html5Mode(true);
-  })
-  .run(function ($rootScope, $state, Auth) {
-    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
-      if (toState.authenticate && !Auth.isLoggedIn()){
-        // User isn’t authenticated
-        $state.go('login');
-        event.preventDefault();
-      }
-    });
   });

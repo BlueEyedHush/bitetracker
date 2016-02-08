@@ -4,7 +4,7 @@ angular.module('foodDiaryApp')
   .config(function($stateProvider) {
     $stateProvider
       .state('login', {
-        url: '/login',
+        url: '/login?referrer',
         templateUrl: 'app/account/login/login.html',
         controller: 'LoginController',
         controllerAs: 'vm'
@@ -41,4 +41,16 @@ angular.module('foodDiaryApp')
         next.referrer = current.name;
       }
     });
+  })
+  .run(function ($rootScope, $state, Auth) {
+    $rootScope.$on('$stateChangeStart', function (event, next) {
+      if (next.authenticate) {
+        Auth.isLoggedIn(function (loggedIn) {
+          if (!loggedIn) {
+            $state.go('login', {referrer: next.name});
+            event.preventDefault();
+          }
+        });
+      }
+    })
   });

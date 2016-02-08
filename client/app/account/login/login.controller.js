@@ -5,6 +5,7 @@ class LoginController {
     this.user = {};
     this.errors = {};
     this.submitted = false;
+    this.referrer = $state.params.referrer || $state.current.referrer || 'main';
 
     this.Auth = Auth;
     this.$state = $state;
@@ -20,7 +21,7 @@ class LoginController {
       })
       .then(() => {
         // Logged in, redirect to home
-        this.$state.go('main');
+        this.$state.go(this.referrer);
       })
       .catch(err => {
         this.errors.other = err.message;
