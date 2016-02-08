@@ -61,7 +61,7 @@ function handleError(res, statusCode) {
 
 // Gets a list of Recipes
 export function index(req, res) {
-  Recipe.findOneAsync({ author: req.user._id })
+  Recipe.findAsync({ author: req.user._id })
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
