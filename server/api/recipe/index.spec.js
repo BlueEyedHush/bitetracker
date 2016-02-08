@@ -10,6 +10,15 @@ var recipeCtrlStub = {
   destroy: 'recipeCtrl.destroy'
 };
 
+var authServiceStub = {
+  isAuthenticated() {
+    return 'authService.isAuthenticated';
+  },
+  hasRole(role) {
+    return 'authService.hasRole.' + role;
+  }
+};
+
 var routerStub = {
   get: sinon.spy(),
   put: sinon.spy(),
@@ -25,7 +34,8 @@ var recipeIndex = proxyquire('./index.js', {
       return routerStub;
     }
   },
-  './recipe.controller': recipeCtrlStub
+  './recipe.controller': recipeCtrlStub,
+  '../../auth/auth.service': authServiceStub
 });
 
 describe('Recipe API Router:', function() {
@@ -38,7 +48,7 @@ describe('Recipe API Router:', function() {
 
     it('should route to recipe.controller.index', function() {
       routerStub.get
-        .withArgs('/', 'recipeCtrl.index')
+        .withArgs('/', 'authService.isAuthenticated', 'recipeCtrl.index')
         .should.have.been.calledOnce;
     });
 
@@ -48,7 +58,7 @@ describe('Recipe API Router:', function() {
 
     it('should route to recipe.controller.show', function() {
       routerStub.get
-        .withArgs('/:id', 'recipeCtrl.show')
+        .withArgs('/:id', 'authService.isAuthenticated', 'recipeCtrl.show')
         .should.have.been.calledOnce;
     });
 
@@ -58,7 +68,7 @@ describe('Recipe API Router:', function() {
 
     it('should route to recipe.controller.create', function() {
       routerStub.post
-        .withArgs('/', 'recipeCtrl.create')
+        .withArgs('/', 'authService.isAuthenticated', 'recipeCtrl.create')
         .should.have.been.calledOnce;
     });
 
@@ -68,7 +78,7 @@ describe('Recipe API Router:', function() {
 
     it('should route to recipe.controller.update', function() {
       routerStub.put
-        .withArgs('/:id', 'recipeCtrl.update')
+        .withArgs('/:id', 'authService.isAuthenticated', 'recipeCtrl.update')
         .should.have.been.calledOnce;
     });
 
@@ -78,7 +88,7 @@ describe('Recipe API Router:', function() {
 
     it('should route to recipe.controller.update', function() {
       routerStub.patch
-        .withArgs('/:id', 'recipeCtrl.update')
+        .withArgs('/:id', 'authService.isAuthenticated', 'recipeCtrl.update')
         .should.have.been.calledOnce;
     });
 
@@ -88,7 +98,7 @@ describe('Recipe API Router:', function() {
 
     it('should route to recipe.controller.destroy', function() {
       routerStub.delete
-        .withArgs('/:id', 'recipeCtrl.destroy')
+        .withArgs('/:id', 'authService.isAuthenticated', 'recipeCtrl.destroy')
         .should.have.been.calledOnce;
     });
 
