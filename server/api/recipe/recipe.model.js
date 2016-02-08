@@ -21,6 +21,10 @@ var RecipeSchema = new Schema({
   author: {
     type: Schema.Types.ObjectId,
     ref: 'User'
+  },
+  image: {
+    type: String,
+    default: 'default.png'
   }
 });
 
