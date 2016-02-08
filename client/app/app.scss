@@ -1,5 +1,7 @@
-$fa-font-path: "../bower_components/font-awesome/fonts";
-@import '../bower_components/font-awesome/scss/font-awesome';
+$fa-font-path: "../bower_components/materialize/font";
+
+//$fa-font-path: "../bower_components/font-awesome/fonts";
+//@import '../bower_components/font-awesome/scss/font-awesome';
 
 $navbar-brand-font-size: 1.5rem;
 $navbar-height: 56px;
@@ -33,6 +35,7 @@ $navbar-height-mobile: 40px;
 // injector
 @import 'admin/admin';
 @import 'main/main';
+@import 'newRecipe/newRecipe';
 @import 'recipes/recipes';
 @import '../components/footer/footer';
 @import '../components/oauth-buttons/oauth-buttons';
