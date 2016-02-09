@@ -1,13 +1,13 @@
-$fa-font-path: "../bower_components/materialize/font";
+//$fa-font-path: "../bower_components/materialize/font";
 
-//$fa-font-path: "../bower_components/font-awesome/fonts";
-//@import '../bower_components/font-awesome/scss/font-awesome';
+$fa-font-path: "../bower_components/font-awesome/fonts";
+@import '../bower_components/font-awesome/scss/font-awesome';
 
-$navbar-brand-font-size: 1.5rem;
-$navbar-height: 56px;
-$navbar-height-mobile: 40px;
-
-@import '../bower_components/materialize/sass/materialize';
+@import "variables";
+@import "../bower_components/bootswatch/paper/variables";
+@import "../bower_components/bootstrap-sass/assets/stylesheets/bootstrap";
+@import "../bower_components/bootswatch/paper/bootswatch";
+@import "../bower_components/material-color/material-color";
 
 /**
  * App-wide Styles

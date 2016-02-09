@@ -7,10 +7,11 @@ angular.module('foodDiaryApp', [
   'ngCookies',
   'ngResource',
   'ngSanitize',
+  'ngAnimate',
   'btford.socket-io',
   'ui.router',
   'validation.match',
-  'ui.materialize'
+  'ui.bootstrap'
 ])
   .config(function($urlRouterProvider, $locationProvider) {
     $urlRouterProvider
