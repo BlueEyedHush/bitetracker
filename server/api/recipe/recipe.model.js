@@ -5,6 +5,10 @@ var mongoose = require('bluebird').promisifyAll(require('mongoose')),
 
 var RecipeSchema = new Schema({
   title: String,
+  private: {
+    type: Boolean,
+    default: true
+  },
   date: {
     type: Date,
     default: Date.now

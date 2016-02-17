@@ -61,17 +61,21 @@ function handleError(res, statusCode) {
 
 // Gets a list of Recipes
 export function index(req, res) {
-  Recipe.findAsync({ author: req.user._id })
-    .then(respondWithResult(res))
-    .catch(handleError(res));
+  if (req.params.user)
+    Recipe.findAsync({author: req.params.user})
+        .then(respondWithResult(res))
+        .catch(handleError(res));
+  else
+    Recipe.findAsync()
+        .then(respondWithResult(res))
+        .catch(handleError(res));
 }
 
 // Gets a single Recipe from the DB
 export function show(req, res) {
-  Recipe.findByIdAsync(req.params.id)
-    .then(handleEntityNotFound(res))
-    .then(respondWithResult(res))
-    .catch(handleError(res));
+  Recipe.findAsync({author: req.params.user, title: req.params.title})
+      .then(respondWithResult(res))
+      .catch(handleError(res));
 }
 
 // Creates a new Recipe in the DB

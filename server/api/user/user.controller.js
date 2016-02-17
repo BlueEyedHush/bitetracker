@@ -115,6 +115,15 @@ export function me(req, res, next) {
     .catch(err => next(err));
 }
 
+export function find(req, res, next) {
+  User.findOneAsync({ name: req.params.name }, '-salt -password')
+    .then(user => {
+      if (!user)
+        return res.status(401).end();
+      res.json(user);
+    })
+}
+
 /**
  * Authentication callback
  */
