@@ -8,7 +8,7 @@ class NavbarController {
   }];
   userMenu = [{
     title: 'Recipes',
-    state: 'recipes'
+    state: 'recipes.list'
   }];
 
   isCollapsed = true;

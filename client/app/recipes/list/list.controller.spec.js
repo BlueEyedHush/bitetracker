@@ -1,16 +1,16 @@
 'use strict';
 
-describe('Controller: RecipesController', function () {
+describe('Controller: RecipesListCtrl', function () {
 
   // load the controller's module
   beforeEach(module('foodDiaryApp'));
 
-  var RecipesCtrl, scope;
+  var RecipesListCtrl, scope;
 
   // Initialize the controller and a mock scope
   beforeEach(inject(function ($controller, $rootScope) {
     scope = $rootScope.$new();
-    RecipesCtrl = $controller('RecipesController', {
+    RecipesListCtrl = $controller('RecipesListCtrl', {
       $scope: scope
     });
   }));
