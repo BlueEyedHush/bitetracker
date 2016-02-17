@@ -51,6 +51,11 @@ var all = {
     clientID:     process.env.GOOGLE_ID || 'id',
     clientSecret: process.env.GOOGLE_SECRET || 'secret',
     callbackURL:  (process.env.DOMAIN || '') + '/auth/google/callback'
+  },
+
+  ndb: {
+    baseUrl: 'http://api.nal.usda.gov/ndb/',
+    apiKey: 'daGJkayYUq1lAE78KwBneFmdCOpb0gFK9fYWUQTe'
   }
 };
 
