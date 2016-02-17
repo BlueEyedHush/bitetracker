@@ -73,7 +73,7 @@ export function index(req, res) {
 
 // Gets a single Recipe from the DB
 export function show(req, res) {
-  Recipe.findAsync({author: req.params.user, title: req.params.title})
+  Recipe.findOneAsync({author: req.params.user, title: req.params.title})
       .then(respondWithResult(res))
       .catch(handleError(res));
 }
