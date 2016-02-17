@@ -3,11 +3,11 @@
 $fa-font-path: "../bower_components/font-awesome/fonts";
 @import '../bower_components/font-awesome/scss/font-awesome';
 
-@import "variables";
+@import "../bower_components/material-color/material-color";
+@import "scss/variables";
 @import "../bower_components/bootswatch/paper/variables";
 @import "../bower_components/bootstrap-sass/assets/stylesheets/bootstrap";
 @import "../bower_components/bootswatch/paper/bootswatch";
-@import "../bower_components/material-color/material-color";
 
 /**
  * App-wide Styles
@@ -37,6 +37,11 @@ $fa-font-path: "../bower_components/font-awesome/fonts";
 @import 'main/main';
 @import 'newRecipe/newRecipe';
 @import 'recipes/recipes';
+@import 'scss/variables';
+@import 'scss/components/card';
+@import 'scss/components/clamp';
+@import 'scss/components/form';
 @import '../components/footer/footer';
+@import '../components/navbar/navbar';
 @import '../components/oauth-buttons/oauth-buttons';
 // endinjector
