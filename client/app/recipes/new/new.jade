@@ -1,0 +1,21 @@
+.container
+    form
+        fieldset.row
+            section.form-group.col-xs-12.col-md-10
+                input.form-control(type='text', ng-model='vm.title')
+                label Title
+            section.checkbox.col-xs-12.col-md-2
+                label
+                    input(type='checkbox', ng-model='vm.private')
+                    | Private
+
+        fieldset.row
+            img
+
+        fieldset
+            h3 Ingredients
+            .row(ng-repeat='ingredient in vm.ingredients')
+                .form-group.col-xs-6
+                    input.form-control(type='text', ng-model='ingredient.name', placeholder='Name')
+                .form-group.col-xs-6
+                    input.form-control(type='text', ng-model='ingredient.qty', placeholder='Quantity')
