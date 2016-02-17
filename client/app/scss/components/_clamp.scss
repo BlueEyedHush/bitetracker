@@ -1,0 +1,33 @@
+
+.clamp-container {
+  position: relative;
+  overflow: visible;
+  min-height: $line-height-computed*$clamp-lines-to-show + 20px;
+
+  .clamp {
+    display: block; /* Fallback for non-webkit */
+    display: -webkit-box;
+    height: $line-height-computed*$clamp-lines-to-show;
+    margin: 0 auto;
+    font-size: $font-size-base;
+    line-height: $line-height-computed;
+    -webkit-line-clamp: $clamp-lines-to-show;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: height 0.5s;
+  } 
+ 
+  &:hover .clamp {
+    margin: -10px;
+    padding: 10px;
+    display: block;
+    overflow-y: visible;
+    height: auto;
+    width: 100%;;
+    min-height: inherit;
+    -webkit-line-clamp: none;
+    text-overflow-ellipsis: none;
+    transition: height 0.5s;
+  }
+}
