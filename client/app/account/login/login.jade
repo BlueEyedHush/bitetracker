@@ -18,7 +18,7 @@
     .col-sm-12
       form.form(name='form', ng-submit='vm.login(form)', novalidate='')
         .form-group
-          input.form-control(type='email', name='email', ng-model='vm.user.email')
+          input.form-control(type='email', name='email', ng-model='vm.user.email', autofocus)
           label Email
         .form-group
           input.form-control(type='password', name='password', ng-model='vm.user.password')
