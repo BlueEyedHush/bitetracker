@@ -16,6 +16,8 @@ import runSequence from 'run-sequence';
 import {protractor, webdriver_update} from 'gulp-protractor';
 import {Instrumenter} from 'isparta';
 
+import debug from 'gulp-debug'
+
 var plugins = gulpLoadPlugins();
 var config;
 
@@ -467,7 +469,6 @@ gulp.task('build:client', ['transpile:client', 'styles', 'html', 'constant'], ()
     var assetsFilter = plugins.filter('**/*.{js,css}');
 
     return gulp.src(paths.client.mainView)
-        .pipe(plugins.jade({pretty: true}))
         .pipe(plugins.useref())
             .pipe(appFilter)
                 .pipe(plugins.addSrc.append('.tmp/templates.js'))
@@ -487,12 +488,14 @@ gulp.task('build:client', ['transpile:client', 'styles', 'html', 'constant'], ()
                 .pipe(plugins.rev())
             .pipe(htmlBlock.restore())
         .pipe(plugins.revReplace({manifest}))
-        .pipe(assetsFilter)
         .pipe(gulp.dest(`${paths.dist}/${clientPath}`));
 });
 
 gulp.task('html', function() {
-    return gulp.src(`${clientPath}/{app,components}/**/*.html`)
+    var htmlPath = `${clientPath}/{app,components}/**/*.html`
+
+    return gulp.src(`${clientPath}/**/*.jade`)
+    	.pipe(plugins.jade({pretty: true}))
         .pipe(plugins.angularTemplatecache({
             module: 'foodDiaryApp'
         }))
