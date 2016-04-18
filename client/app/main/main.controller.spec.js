@@ -5,7 +5,6 @@ describe('Controller: MainController', function() {
   // load the controller's module
   beforeEach(module('foodDiaryApp'));
   beforeEach(module('stateMock'));
-  beforeEach(module('socketMock'));
 
   var scope;
   var MainController;

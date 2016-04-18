@@ -8,7 +8,6 @@ angular.module('foodDiaryApp', [
   'ngResource',
   'ngSanitize',
   'ngAnimate',
-  'btford.socket-io',
   'ui.router',
   'validation.match',
   'ui.bootstrap'

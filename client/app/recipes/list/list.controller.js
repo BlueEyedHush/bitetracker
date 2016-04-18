@@ -4,18 +4,13 @@
 
   class RecipeListController {
 
-    constructor($state, $stateParams, $http, $scope, socket) {
+    constructor($state, $stateParams, $http) {
       this.$state = $state;
       this.$http = $http;
       this.list = [];
 
       $http.get('/api/recipes/' + ($stateParams.user || '')).then(response => {
         this.list = response.data;
-        socket.syncUpdates('recipe', this.list);
-      });
-
-      $scope.$on('$destroy', function() {
-        socket.unsyncUpdates('recipe');
       });
     }
 
