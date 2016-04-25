@@ -1,8 +1,0 @@
-.container
-    .row
-        .col-xs-12.col-s-6.col-md-3(ng-repeat='recipe in vm.list')
-            .hoverable.clickable.card(ng-click='vm.displayRecipe(recipe)')
-                section.card-image
-                    img(ng-src='assets/images/recipes/{{ recipe.image }}')
-                section.card-content.clamp-container
-                    span.card-title.clamp {{ recipe.title }}

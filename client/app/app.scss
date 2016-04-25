@@ -1,58 +1,41 @@
-//$fa-font-path: "../bower_components/materialize/font";
-
-$fa-font-path: "../bower_components/font-awesome/fonts";
-@import '../bower_components/font-awesome/scss/font-awesome';
-
-@import "../bower_components/material-color/material-color";
-@import "scss/variables";
-@import "../bower_components/bootswatch/paper/variables";
-@import "../bower_components/bootstrap-sass/assets/stylesheets/bootstrap";
-@import "../bower_components/bootswatch/paper/bootswatch";
-
-/**
- * App-wide Styles
- */
-
-.browserupgrade {
-  margin: 0.2em 0;
-  background: #ccc;
-  color: #000;
-  padding: 0.2em 0;
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #333;
+  background-color: #fff;
+  margin: 0;
+  padding: 0;
 }
 
-/* Responsive: Portrait tablets and up */
-@media screen and (min-width: 768px) {
-  .container {
-    max-width: 730px;
+header {
+  color: #fff;
+  background: #0066bb url(../images/reactjs.png) no-repeat right 10px;
+  background-size: contain;
+  h1 {
+    display: inline-block;
+    padding: 0 20px;
+  }
+  a {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 3px;
+    &.active,
+    &:hover {
+      background-color: #0085F3;
+    }
   }
 }
 
-.clickable {
-  cursor: pointer;
+section {
+  padding: 20px;
 }
 
-.hoverable {
-  transition: box-shadow .25s;
-  box-shadow: 0;
-}
-
-.hoverable:hover {
-  transition: box-shadow .25s;
-  box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
-
-// Component styles are injected through grunt
+// Component styles are injected using gulp
 // injector
-@import 'admin/admin';
-@import 'main/main';
-@import 'recipes/list/list';
-@import 'recipes/new/new';
-@import 'recipes/recipes';
-@import 'scss/variables';
-@import 'scss/components/card';
-@import 'scss/components/clamp';
-@import 'scss/components/form';
-@import '../components/footer/footer';
-@import '../components/navbar/navbar';
-@import '../components/oauth-buttons/oauth-buttons';
+
 // endinjector

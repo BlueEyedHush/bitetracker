@@ -1,6 +1,47 @@
 // Generated on 2016-02-04 using generator-angular-fullstack 3.3.0
 'use strict';
 
+/**
+ * 'debug' serve: (359)
+ *  - JS linting (client, server, test; seems to be done in-place, without copying),
+ *  - inject - injection to index.html and app/app.scss (no copying here!)
+ *    - js - every js file found in client/ is injected between <!-- injector:js --> and
+ *      <!-- endinjector -->, apart from {spec,mock}.js and app/app.js
+ *    - css - every from client/{app,components}
+ *    - scss - injecting into app/app.scss using @import
+ *  - wiredep:client - puts bower deps into index.html between <!-- bower:js --> and <!-- endbower -->
+ *    - excludes certain things, which were included manually
+ *  - transpile:client - takes client scripts, babel+sourcemap and puts in .tmp
+ *  - styles (scss compilation) - takes app/app.scss, builds sourcemaps and compiles, then
+ *    put's him in .tmp/app
+ *  - start:server - server code run from server/, loads configs from server/config
+ *    - 'configs' seem to be simply included into node initialization script
+ *  - start:client
+ *  - watch - it seems to duplicate the code, so modifications might be needed there
+ *
+ * build - used by production only:
+ * - inject
+ * - wiredep:client
+ * - build:images - image minimization, versioning, -> dist/client/assets/images
+ *  - also generates rev-manifest.json (used to replace non-versioned urls with versioned ones)
+ * - copy:extras - favicon, robots, .htaccess
+ * - copy:assets - copy assets other than images
+ * - transpile:server
+ * - transpile:client
+ * - styles
+ * - build:client
+ *  - concatenates same type of files (but there is nothing to concatenate now)
+ *  - versions app.js and css file
+ *  - copies files to dist/client
+ *
+ * 'production' serve:
+ *  - build
+ *  - nodejs environment setup
+ *
+ *  Solution: for development just link .jsx and babel, for production convert them
+ *
+ */
+
 import _ from 'lodash';
 import del from 'del';
 import gulp from 'gulp';
@@ -15,6 +56,8 @@ import {Server as KarmaServer} from 'karma';
 import runSequence from 'run-sequence';
 import {protractor, webdriver_update} from 'gulp-protractor';
 import {Instrumenter} from 'isparta';
+var react = require('gulp-react');
+var injectString = require('gulp-inject-string');
 
 import debug from 'gulp-debug'
 
@@ -31,9 +74,9 @@ const paths = {
             `${clientPath}/**/!(*.spec|*.mock).js`,
             `!${clientPath}/bower_components/**/*`
         ],
+        reactJsx: `${clientPath}/**/*.jsx`,
         styles: [`${clientPath}/{app,components}/**/*.scss`],
         mainStyle: `${clientPath}/app/app.scss`,
-        views: `${clientPath}/{app,components}/**/*.jade`,
         mainView: `${clientPath}/index.html`,
         test: [`${clientPath}/{app,components}/**/*.{spec,mock}.js`],
         e2e: ['e2e/**/*.spec.js'],
@@ -246,6 +289,21 @@ gulp.task('inject:scss', () => {
         .pipe(gulp.dest(`${clientPath}/app`));
 });
 
+gulp.task('inject:jsx', () => {
+  return gulp.src(paths.client.mainView)
+    .pipe(plugins.inject(
+      gulp.src(paths.client.reactJsx, {read: false})
+        .pipe(plugins.sort(sortModulesFirst)),
+      {
+        starttag: '<!-- injector:jsx -->',
+        endtag: '<!-- endinjector -->',
+        transform: (filepath) => '\n<script type="text/babel" src="' + filepath.replace(`/${clientPath}/`, '') + '"></script>'
+      }))
+    .pipe(injectString.after('<!-- injector:jsxBabel -->',
+    '<script src="bower_components/babel/browser.min.js"></script>'))
+    .pipe(gulp.dest(clientPath));
+});
+
 gulp.task('styles', () => {
     return gulp.src(paths.client.mainStyle)
         .pipe(styles())
@@ -332,12 +390,6 @@ gulp.task('watch', () => {
             .pipe(plugins.livereload());
     });
 
-    plugins.watch(paths.client.views)
-        .pipe(plugins.plumber())
-        .pipe(plugins.jade({ pretty: true }))
-        .pipe(gulp.dest('.tmp'))
-        .pipe(plugins.livereload());
-
     plugins.watch(paths.client.scripts) //['inject:js']
         .pipe(plugins.plumber())
         .pipe(transpileClient())
@@ -353,8 +405,8 @@ gulp.task('watch', () => {
 });
 
 gulp.task('serve', cb => {
-    runSequence(['clean:tmp', 'constant'],
-        ['lint:scripts', 'inject', 'jade'],
+    runSequence(['clean:tmp'],
+        ['lint:scripts', 'inject', 'inject:jsx'],
         ['wiredep:client'],
         ['transpile:client', 'styles'],
         ['start:server', 'start:client'],
@@ -395,7 +447,7 @@ gulp.task('mocha:integration', () => {
         .pipe(mocha());
 });
 
-gulp.task('test:client', ['wiredep:test', 'constant'], (done) => {
+gulp.task('test:client', ['wiredep:test'], (done) => {
     new KarmaServer({
       configFile: `${__dirname}/${paths.karma}`,
       singleRun: true
@@ -459,7 +511,7 @@ gulp.task('build', cb => {
 
 gulp.task('clean:dist', () => del([`${paths.dist}/!(.git*|.openshift|Procfile)**`], {dot: true}));
 
-gulp.task('build:client', ['transpile:client', 'styles', 'html', 'constant'], () => {
+gulp.task('build:client', ['transpile:client', 'styles'], () => {
     var manifest = gulp.src(`${paths.dist}/${clientPath}/assets/rev-manifest.json`);
 
     var appFilter = plugins.filter('**/app.js');
@@ -471,11 +523,9 @@ gulp.task('build:client', ['transpile:client', 'styles', 'html', 'constant'], ()
     return gulp.src(paths.client.mainView)
         .pipe(plugins.useref())
             .pipe(appFilter)
-                .pipe(plugins.addSrc.append('.tmp/templates.js'))
                 .pipe(plugins.concat('app/app.js'))
             .pipe(appFilter.restore())
             .pipe(jsFilter)
-                .pipe(plugins.ngAnnotate())
                 .pipe(plugins.uglify())
             .pipe(jsFilter.restore())
             .pipe(cssFilter)
@@ -489,37 +539,6 @@ gulp.task('build:client', ['transpile:client', 'styles', 'html', 'constant'], ()
             .pipe(htmlBlock.restore())
         .pipe(plugins.revReplace({manifest}))
         .pipe(gulp.dest(`${paths.dist}/${clientPath}`));
-});
-
-gulp.task('html', function() {
-    var htmlPath = `${clientPath}/{app,components}/**/*.html`
-
-    return gulp.src(`${clientPath}/**/*.jade`)
-    	.pipe(plugins.jade({pretty: true}))
-        .pipe(plugins.angularTemplatecache({
-            module: 'foodDiaryApp'
-        }))
-        .pipe(gulp.dest('.tmp'));
-});
-gulp.task('jade', function() {
-  gulp.src(paths.client.views)
-    .pipe(plugins.jade())
-    .pipe(gulp.dest('.tmp'));
-});
-
-gulp.task('constant', function() {
-  let sharedConfig = require(`./${serverPath}/config/environment/shared`);
-  return plugins.ngConstant({
-    name: 'foodDiaryApp.constants',
-    deps: [],
-    wrap: true,
-    stream: true,
-    constants: { appConfig: sharedConfig }
-  })
-    .pipe(plugins.rename({
-      basename: 'app.constant'
-    }))
-    .pipe(gulp.dest(`${clientPath}/app/`))
 });
 
 gulp.task('build:images', () => {
