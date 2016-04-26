@@ -9,13 +9,13 @@ import path from 'path';
 
 export default function(app) {
   // Insert routes below
-  app.use('/api/foods', require('./api/food'));
-  app.use('/api/food_groups', require('./api/food/food_group'));
-  app.use('/api/recipes', require('./api/recipe'));
-  app.use('/api/things', require('./api/thing'));
-  app.use('/api/users', require('./api/user'));
+  app.use('/api/foods', require('./api/food').default);
+  app.use('/api/food_groups', require('./api/food/food_group').default);
+  app.use('/api/recipes', require('./api/recipe').default);
+  app.use('/api/things', require('./api/thing').default);
+  app.use('/api/users', require('./api/user').default);
 
-  app.use('/auth', require('./auth'));
+  app.use('/auth', require('./auth').default);
 
   // All undefined asset or api routes should return a 404
   app.route('/:url(api|auth|components|app|bower_components|assets)/*')
