@@ -26,7 +26,7 @@ var thingIndex = proxyquire('./index.js', {
     }
   },
   './thing.controller': thingCtrlStub
-});
+}).default;
 
 describe('Thing API Router:', function() {
 

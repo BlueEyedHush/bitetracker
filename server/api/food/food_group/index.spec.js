@@ -22,7 +22,7 @@ var foodGroupIndex = proxyquire('./index.js', {
     }
   },
   './food_group.controller': foodGroupCtrlStub
-});
+}).default;
 
 describe('FoodGroup API Router:', function() {
 

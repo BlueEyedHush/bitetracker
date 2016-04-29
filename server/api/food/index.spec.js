@@ -26,7 +26,7 @@ var foodIndex = proxyquire('./index.js', {
     }
   },
   './food.controller': foodCtrlStub
-});
+}).default;
 
 describe('Food API Router:', function() {
 

@@ -156,20 +156,26 @@ let istanbul = lazypipe()
  * Env
  ********************/
 
+function commonConfig() {
+  process.env.CLIENT_ROOT = clientOut;
+}
+
 gulp.task('env', () => {
-  plugins.env({
-    vars: {NODE_ENV: 'development'}
-  });
+  commonConfig();
+  process.env.SERVER_ROOT = serverPath;
+  process.env.NODE_ENV = 'development';
 });
+
 gulp.task('env:test', () => {
-    plugins.env({
-        vars: {NODE_ENV: 'test'}
-    });
+  commonConfig();
+  process.env.SERVER_ROOT = serverPath;
+  process.env.NODE_ENV = 'test';
 });
+
 gulp.task('env:prod', () => {
-    plugins.env({
-        vars: {NODE_ENV: 'production'}
-    });
+  commonConfig();
+  process.env.SERVER_ROOT = serverOut;
+  process.env.NODE_ENV = 'production';
 });
 
 /********************
@@ -193,19 +199,11 @@ gulp.task('jscs', () => {
 });
 
 gulp.task('start:server:prod', () => {
-    process.env.NODE_ENV = process.env.NODE_ENV || 'production';
-    process.env.CLIENT_ROOT = clientOut;
-    process.env.SERVER_ROOT = serverOut;
-    nodemon(`-w ${serverOut} ${serverOut}`)
-        .on('log', onServerLog);
+    nodemon(`-w ${serverOut} ${serverOut}`).on('log', onServerLog);
 });
 
 gulp.task('start:server', () => {
-    process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-    process.env.CLIENT_ROOT = clientOut;
-    process.env.SERVER_ROOT = serverPath;
-    nodemon(`-w ${serverPath} ${serverPath}`)
-        .on('log', onServerLog);
+    nodemon(`-w ${serverPath} ${serverPath}`).on('log', onServerLog);
 });
 
 gulp.task('serve', cb => {
@@ -263,27 +261,8 @@ gulp.task('mocha:integration', () => {
         .pipe(mocha());
 });
 
-gulp.task('test:client', ['wiredep:test'], (done) => {
-    new KarmaServer({
-      configFile: `${__dirname}/${paths.karma}`,
-      singleRun: true
-    }, done).start();
-});
+gulp.task('test:client', (done) => {
 
-gulp.task('wiredep:test', () => {
-    return gulp.src(paths.karma)
-        .pipe(wiredep({
-            exclude: [
-                /bootstrap-sass-official/,
-                /bootstrap.js/,
-                '/json3/',
-                '/es5-shim/',
-                /bootstrap.css/,
-                /font-awesome.css/
-            ],
-            devDependencies: true
-        }))
-        .pipe(gulp.dest('./'));
 });
 
 /********************

@@ -50,7 +50,6 @@
     "gulp": "^3.9.0",
     "gulp-babel": "^6.1.2",
     "gulp-debug": "^2.1.2",
-    "gulp-env": "^0.2.0",
     "gulp-istanbul": "~0.10.3",
     "gulp-istanbul-enforcer": "^1.0.3",
     "gulp-jade": "^1.0.1",

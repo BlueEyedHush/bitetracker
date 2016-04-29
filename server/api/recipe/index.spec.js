@@ -36,7 +36,7 @@ var recipeIndex = proxyquire('./index.js', {
   },
   './recipe.controller': recipeCtrlStub,
   '../../auth/auth.service': authServiceStub
-});
+}).default;
 
 describe('Recipe API Router:', function() {
 

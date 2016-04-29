@@ -36,7 +36,7 @@ var userIndex = proxyquire('./index', {
   },
   './user.controller': userCtrlStub,
   '../../auth/auth.service': authServiceStub
-});
+}).default;
 
 describe('User API Router:', function() {
 
