@@ -18,9 +18,11 @@ import webpack from 'webpack';
 import webpackStream from 'webpack-stream';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import plumber from 'gulp-plumber';
+import yargs from 'yargs';
 
 import debug from 'gulp-debug'
 
+const argv = yargs.argv;
 var plugins = gulpLoadPlugins();
 
 const out = 'build';
