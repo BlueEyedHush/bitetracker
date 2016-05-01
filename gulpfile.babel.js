@@ -22,7 +22,10 @@ import yargs from 'yargs';
 
 import debug from 'gulp-debug'
 
-const argv = yargs.argv;
+const argv = yargs
+  .alias('b', 'browsers')
+  .argv;
+
 var plugins = gulpLoadPlugins();
 
 const out = 'build';
@@ -268,18 +271,52 @@ gulp.task('test:client:cont', (done) => {
   startKarmaServer(true, done);
 });
 
+const SUPPORTED_BROWSERS = ['IE', 'Firefox', 'Chrome', 'Opera', 'Safari', 'PhantomJS'];
+
 function startKarmaServer(continous, done) {
   process.env.CLIENT_PATH = path.resolve(clientPath);
 
   var config = {
     configFile: `${__dirname}/${paths.karma}`,
-    singleRun: !continous/*,
-    detectBrowsers: {
-      enabled: false
-    }*/
+    singleRun: !continous
   };
 
-  new KarmaServer(config, done).start();
+  var runTests = true;
+  if(argv.browsers) {
+    if(typeof argv.browsers === 'string' || argv.browsers instanceof String) {
+      const noWhitespaces = argv.browsers.replace('\\s', '');
+      const browsers = noWhitespaces.split(',')
+        .map((ab) => {
+          const fullBrowserName = SUPPORTED_BROWSERS
+            .filter(fn => fn.toLowerCase().startsWith(ab.toLowerCase()))
+            .find((el, idx, arr) => true); /* take any element*/
+
+          if(fullBrowserName == undefined) {
+            console.log("Unrecognized browser name prefix: " + ab);
+          }
+
+          return fullBrowserName;
+        })
+        .filter(s => s != undefined);
+
+      if (browsers.length > 0) {
+        console.log("Tests will be executed with the following browsers: " + browsers);
+
+        config.browsers = browsers;
+        config.detectBrowsers = {
+          enabled: false
+        };
+      } else {
+        console.log("No supported browsers found on the list, aborting");
+        runTests = false;
+      }
+    } else {
+      console.log('Browser list empty, aborting');
+      runTests = false;
+    }
+  }
+
+  if(runTests) new KarmaServer(config, done).start();
 }
 
 /********************
