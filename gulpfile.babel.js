@@ -1,5 +1,6 @@
 'use strict';
 
+import path from 'path';
 import _ from 'lodash';
 import del from 'del';
 import gulp from 'gulp';
@@ -106,17 +107,6 @@ const webpackProdConf = {
 };
 
 /********************
- * Helper functions
- ********************/
-
-function onServerLog(log) {
-    console.log(plugins.util.colors.white('[') +
-        plugins.util.colors.yellow('nodemon') +
-        plugins.util.colors.white('] ') +
-        log.message);
-}
-
-/********************
  * Reusable pipelines
  ********************/
 
@@ -206,6 +196,13 @@ gulp.task('start:server', () => {
     nodemon(`-w ${serverPath} ${serverPath}`).on('log', onServerLog);
 });
 
+function onServerLog(log) {
+  console.log(plugins.util.colors.white('[') +
+    plugins.util.colors.yellow('nodemon') +
+    plugins.util.colors.white('] ') +
+    log.message);
+}
+
 gulp.task('serve', cb => {
   runSequence(
     'build',
@@ -262,8 +259,26 @@ gulp.task('mocha:integration', () => {
 });
 
 gulp.task('test:client', (done) => {
-
+  startKarmaServer(false, done);
 });
+
+gulp.task('test:client:cont', (done) => {
+  startKarmaServer(true, done);
+});
+
+function startKarmaServer(continous, done) {
+  process.env.CLIENT_PATH = path.resolve(clientPath);
+
+  var config = {
+    configFile: `${__dirname}/${paths.karma}`,
+    singleRun: !continous/*,
+    detectBrowsers: {
+      enabled: false
+    }*/
+  };
+
+  new KarmaServer(config, done).start();
+}
 
 /********************
  * Build
