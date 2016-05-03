@@ -72,6 +72,9 @@ module.exports = function(config) {
             test: /\.scss$/,
             loaders: ["style", "css", "sass"]
           },{
+            test: /\.css$/,
+            loaders: ["style", "css"]
+          },{
             test: /\.png$/,
             loader: "file-loader"
           },
