@@ -79,7 +79,13 @@ const webpackDevConf = {
     },{
       test: /\.png$/,
       loader: "file-loader"
-    }]
+    },
+    { test: /\.woff$/,   loader: "url-loader?limit=10000&minetype=font/woff" },
+    { test: /\.woff2$/,   loader: "url-loader?limit=10000&minetype=font/woff2" },
+    { test: /\.ttf$/,    loader: "file-loader" },
+    { test: /\.eot$/,    loader: "file-loader" },
+    { test: /\.svg$/,    loader: "file-loader" }
+    ]
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -105,7 +111,13 @@ const webpackProdConf = {
     },{
       test: /\.png$/,
       loader: "file-loader"
-    }]
+    },
+    { test: /\.woff$/,   loader: "url-loader?limit=10000&minetype=font/woff" },
+    { test: /\.woff2$/,   loader: "url-loader?limit=10000&minetype=font/woff2" },
+    { test: /\.ttf$/,    loader: "file-loader" },
+    { test: /\.eot$/,    loader: "file-loader" },
+    { test: /\.svg$/,    loader: "file-loader" }
+    ]
   },
   plugins: [
     new webpack.optimize.UglifyJsPlugin(),
