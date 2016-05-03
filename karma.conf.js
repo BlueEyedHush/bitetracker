@@ -70,7 +70,7 @@ module.exports = function(config) {
             loader: 'babel-loader'
           },{
             test: /\.scss$/,
-            loaders: ["style", "css", "sass"]
+            loaders: ["style", "css", "resolve-url", "sass?sourceMap"]
           },{
             test: /\.css$/,
             loaders: ["style", "css"]

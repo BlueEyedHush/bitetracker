@@ -72,7 +72,7 @@ const webpackDevConf = {
       loader: 'babel-loader'
     },{
       test: /\.scss$/,
-      loaders: ["style", "css", "sass"]
+      loaders: ["style", "css", "resolve-url","sass?sourceMap"]
     },{
       test: /\.css$/,
       loaders: ["style", "css"]
@@ -98,7 +98,7 @@ const webpackProdConf = {
       loader: 'babel-loader'
     },{
       test: /\.scss$/,
-      loaders: ["style", "css", "sass"]
+      loaders: ["style", "css", "resolve-url", "sass?sourceMap"]
     },{
       test: /\.css$/,
       loaders: ["style", "css"]
