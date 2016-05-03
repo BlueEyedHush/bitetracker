@@ -19,6 +19,7 @@ import webpackStream from 'webpack-stream';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import plumber from 'gulp-plumber';
 import yargs from 'yargs';
+import autoprefixer from 'autoprefixer';
 
 import debug from 'gulp-debug'
 
@@ -72,10 +73,10 @@ const webpackDevConf = {
       loader: 'babel-loader'
     },{
       test: /\.scss$/,
-      loaders: ["style", "css", "resolve-url","sass?sourceMap"]
+      loaders: ["style", "css", "postcss", "resolve-url", "sass?sourceMap"]
     },{
       test: /\.css$/,
-      loaders: ["style", "css"]
+      loaders: ["style", "css", "postcss"]
     },{
       test: /\.png$/,
       loader: "file-loader"
@@ -93,7 +94,10 @@ const webpackDevConf = {
       template: paths.client.htmlTemplate,
       inject: 'body'
     })
-  ]
+  ],
+  postcss: function () {
+   return [autoprefixer];
+  }
 };
 
 const webpackProdConf = {
@@ -104,10 +108,10 @@ const webpackProdConf = {
       loader: 'babel-loader'
     },{
       test: /\.scss$/,
-      loaders: ["style", "css", "resolve-url", "sass?sourceMap"]
+      loaders: ["style", "css", "postcss", "resolve-url", "sass?sourceMap"]
     },{
       test: /\.css$/,
-      loaders: ["style", "css"]
+      loaders: ["style", "css", "postcss"]
     },{
       test: /\.png$/,
       loader: "file-loader"
@@ -126,7 +130,10 @@ const webpackProdConf = {
       template: paths.client.htmlTemplate,
       inject: 'body'
     })
-  ]
+  ],
+  postcss: function () {
+    return [autoprefixer];
+  }
 };
 
 /********************

@@ -1,5 +1,6 @@
 
 var path = require('path');
+import autoprefixer from 'autoprefixer';
 
 /* to determine actual list of browsers on which frontend tests should be run intersection of this array and
  * autodetection results is taken. Currently avaliable:
@@ -70,10 +71,10 @@ module.exports = function(config) {
             loader: 'babel-loader'
           },{
             test: /\.scss$/,
-            loaders: ["style", "css", "resolve-url", "sass?sourceMap"]
+            loaders: ["style", "css", "postcss", "resolve-url", "sass?sourceMap"]
           },{
             test: /\.css$/,
-            loaders: ["style", "css"]
+            loaders: ["style", "css", "postcss"]
           },{
             test: /\.png$/,
             loader: "file-loader"
@@ -97,6 +98,9 @@ module.exports = function(config) {
         alias: {
           CLIENT_PATH: process.env.CLIENT_PATH || path.resolve('./client/')
         }
+      },
+      postcss: function () {
+        return [autoprefixer];
       }
     },
 
