@@ -34,6 +34,8 @@ const clientPath = 'client';
 const serverPath = 'server';
 const clientOut = `${out}/client`;
 const serverOut = `${out}/server`;
+const indexDir = `${clientPath}/index`;
+const appDir = `${clientPath}/app`;
 
 const paths = {
     client: {
@@ -42,8 +44,16 @@ const paths = {
             `${clientPath}/**/*.js`,
             `${clientPath}/**/*.jsx`
         ],
-        webpackEntrypoint: `${clientPath}/app/app.jsx`,
-        htmlTemplate: `${clientPath}/index.html`,
+        index: {
+          entrypoint: `${indexDir}/index.jsx`,
+          htmlTemplate: `${clientPath}/index.html`,
+          outputPageName: 'index.html'
+        },
+        app: {
+          entrypoint: `${appDir}/app.jsx`,
+          htmlTemplate: `${clientPath}/app.html`,
+          outputPageName: 'app.html'
+        },
         test: [`${clientPath}/{app,components}/**/*.{spec,mock}.js`],
         e2e: ['e2e/**/*.spec.js'],
         // copied to client directory without processing
@@ -77,14 +87,8 @@ function htmlPage(wc, filename, template) {
   return wc;
 }
 
-function webpackDev() {
-  const indexPagePlugin = _.partialRight(htmlPage, 'index.html', paths.client.htmlTemplate);
-  return (_.flow(wpConf.dev, indexPagePlugin))();
-}
-
-function webpackProd() {
-  const indexPagePlugin = _.partialRight(htmlPage, 'index.html', paths.client.htmlTemplate);
-  return (_.flow(wpConf.prod, indexPagePlugin))();
+function webpackConf(baseConfig, pathsConfig) {
+  return (_.flow(baseConfig, _.partialRight(htmlPage, pathsConfig.outputPageName, pathsConfig.htmlTemplate)))();
 }
 
 /********************
@@ -202,18 +206,31 @@ gulp.task('serve:dist', cb => {
 });
 
 gulp.task('watch', () => {
-    plugins.livereload.listen();
+  plugins.livereload.listen();
 
-    const intellijTempFileSuffix = '___jb_tmp___';
-    return plugins.watch([`${clientPath}/**/*`, `!/**/*${intellijTempFileSuffix}`],{
-        name: 'livereloadWatcher'
-      }, () => {
-      gulp.src(paths.client.webpackEntrypoint)
-        .pipe(plumber())
-        .pipe(webpackStream(webpackDev()).on('error', function() {this.emit('end')}))
-        .pipe(gulp.dest(clientOut))
-        .pipe(plugins.livereload());
-    });
+  const intellijTempFileSuffix = '___jb_tmp___';
+  const webpackDevIndex = webpackConf(wpConf.dev, paths.client.index);
+  const webpackDevApp = webpackConf(wpConf.dev, paths.client.app);
+
+  plugins.watch([`${appDir}/**/*`, paths.client.app.htmlTemplate, `!/**/*${intellijTempFileSuffix}`],{
+    name: 'AppWatcher'
+  }, () => {
+    gulp.src(paths.client.app.entrypoint)
+      .pipe(plumber())
+      .pipe(webpackStream(webpackDevApp).on('error', function() {this.emit('end')}))
+      .pipe(gulp.dest(clientOut))
+      .pipe(plugins.livereload());
+  });
+
+  return plugins.watch([`${indexDir}/**/*`, paths.client.index.htmlTemplate, `!/**/*${intellijTempFileSuffix}`],{
+      name: 'IndexWatcher'
+    }, () => {
+    gulp.src(paths.client.index.entrypoint)
+      .pipe(plumber())
+      .pipe(webpackStream(webpackDevIndex).on('error', function() {this.emit('end')}))
+      .pipe(gulp.dest(clientOut))
+      .pipe(plugins.livereload());
+  });
 });
 
 gulp.task('test', cb => {
@@ -303,18 +320,20 @@ gulp.task('build', cb => {
   runSequence(
     'clean:out',
     'copy:extras',
-    'client:webpack',
+    'webpack:index',
+    'webpack:app',
     cb);
 });
 
 gulp.task('build:prod', cb => {
   runSequence(
-        'clean:out',
-        'copy:extras',
-        'client:webpack:prod',
-        'lint:scripts:server',
-        'transpile:server',
-        cb);
+    'clean:out',
+    'copy:extras',
+    'webpack:index:prod',
+    'webpack:app:prod',
+    'lint:scripts:server',
+    'transpile:server',
+    cb);
 });
 
 gulp.task('clean:out', () => del([`${paths.out}/**`], {dot: true}));
@@ -324,16 +343,27 @@ gulp.task('copy:extras', () => {
         .pipe(gulp.dest(clientOut));
 });
 
-gulp.task('client:webpack', () => {
-  return gulp.src(paths.client.webpackEntrypoint)
-    .pipe(webpackStream(webpackDev()))
+function webpackBuilder(baseConfig, pathConfig) {
+  return gulp.src(pathConfig.entrypoint)
+    .pipe(webpackStream(webpackConf(baseConfig, pathConfig)))
     .pipe(gulp.dest(clientOut));
+}
+
+
+gulp.task('webpack:index', () => {
+  return webpackBuilder(wpConf.dev, paths.client.index);
 });
 
-gulp.task('client:webpack:prod', () => {
-  return gulp.src(paths.client.webpackEntrypoint)
-    .pipe(webpackStream(webpackProd()))
-    .pipe(gulp.dest(clientOut));
+gulp.task('webpack:index:prod', () => {
+  return webpackBuilder(wpConf.prod, paths.client.index);
+});
+
+gulp.task('webpack:app', () => {
+  return webpackBuilder(wpConf.dev, paths.client.app);
+});
+
+gulp.task('webpack:app:prod', () => {
+  return webpackBuilder(wpConf.prod, paths.client.app);
 });
 
 gulp.task('transpile:server', () => {
@@ -394,6 +424,6 @@ gulp.task('test:e2e', ['env:test', 'start:server', 'webdriver_update'], cb => {
 });
 
 gulp.task('debug:webpackConf', cb => {
-  console.log('=== DEVELOPMENT ===\n' + JSON.stringify(webpackDev(), null, 2));
-  console.log('=== PRODUCTION ===\n' + JSON.stringify(webpackProd(), null, 2));
+  console.log('=== APP DEVELOPMENT ===\n' + JSON.stringify(webpackConf(wpConf.dev, paths.client.app), null, 2));
+  console.log('=== APP PRODUCTION ===\n' + JSON.stringify(webpackConf(wpConf.prod, paths.client.app), null, 2));
 });
