@@ -1,6 +1,6 @@
 
 var path = require('path');
-import autoprefixer from 'autoprefixer';
+import * as wpConf from './webpack.dconf';
 
 /* to determine actual list of browsers on which frontend tests should be run intersection of this array and
  * autodetection results is taken. Currently avaliable:
@@ -62,47 +62,7 @@ module.exports = function(config) {
     // testing framework to use (jasmine/mocha/qunit/...)
     frameworks: ['mocha', 'chai', 'detectBrowsers', 'sinon-chai', 'chai-as-promised', 'chai-things'],
 
-    webpack: { //kind of a copy of your webpack config
-      devtool: 'inline-source-map', //just do inline source maps instead of the default
-      module: {
-        loaders: [{
-            test: /\.jsx?$/,
-            exclude: /node_modules/,
-            loader: 'babel-loader'
-          },{
-            test: /\.scss$/,
-            loaders: ["style", "css", "postcss", "resolve-url", "sass?sourceMap"]
-          },{
-            test: /\.css$/,
-            loaders: ["style", "css", "postcss"]
-          },{
-            test: /\.png$/,
-            loader: "file-loader"
-          },
-          { test: /\.woff$/,   loader: "url-loader?limit=10000&minetype=font/woff" },
-          { test: /\.woff2$/,   loader: "url-loader?limit=10000&minetype=font/woff2" },
-          { test: /\.ttf$/,    loader: "file-loader" },
-          { test: /\.eot$/,    loader: "file-loader" },
-          { test: /\.svg$/,    loader: "file-loader" },
-          {
-            test: /\.json$/,
-            loader: 'json',
-          }]
-      },
-      externals: {
-        'react/addons': true,
-        'react/lib/ExecutionEnvironment': true,
-        'react/lib/ReactContext': true
-      },
-      resolve: {
-        alias: {
-          CLIENT_PATH: process.env.CLIENT_PATH || path.resolve('./client/')
-        }
-      },
-      postcss: function () {
-        return [autoprefixer];
-      }
-    },
+    webpack: wpConf.karma(),
 
     webpackServer: {
       noInfo: true //please don't spam the console when running in karma!

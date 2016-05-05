@@ -19,7 +19,7 @@ import webpackStream from 'webpack-stream';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import plumber from 'gulp-plumber';
 import yargs from 'yargs';
-import autoprefixer from 'autoprefixer';
+import * as wpConf from './webpack.dconf';
 
 import debug from 'gulp-debug'
 
@@ -64,77 +64,28 @@ const paths = {
     karma: 'karma.conf.js'
 };
 
-const webpackDevConf = {
-  devtool: 'source-map',
-  module: {
-    loaders: [{
-      test: /\.jsx?$/,
-      exclude: /node_modules/,
-      loader: 'babel-loader'
-    },{
-      test: /\.scss$/,
-      loaders: ["style", "css", "postcss", "resolve-url", "sass?sourceMap"]
-    },{
-      test: /\.css$/,
-      loaders: ["style", "css", "postcss"]
-    },{
-      test: /\.png$/,
-      loader: "file-loader"
-    },
-    { test: /\.woff$/,   loader: "url-loader?limit=10000&minetype=font/woff" },
-    { test: /\.woff2$/,   loader: "url-loader?limit=10000&minetype=font/woff2" },
-    { test: /\.ttf$/,    loader: "file-loader" },
-    { test: /\.eot$/,    loader: "file-loader" },
-    { test: /\.svg$/,    loader: "file-loader" }
-    ]
-  },
-  plugins: [
-    new HtmlWebpackPlugin({
-      filename: `index.html`,
-      template: paths.client.htmlTemplate,
-      inject: 'body'
-    })
-  ],
-  postcss: function () {
-   return [autoprefixer];
-  }
-};
+/******************************
+ * Webpack config compositors
+ ******************************/
 
-const webpackProdConf = {
-  module: {
-    loaders: [{
-      test: /\.jsx?$/,
-      exclude: /node_modules/,
-      loader: 'babel-loader'
-    },{
-      test: /\.scss$/,
-      loaders: ["style", "css", "postcss", "resolve-url", "sass?sourceMap"]
-    },{
-      test: /\.css$/,
-      loaders: ["style", "css", "postcss"]
-    },{
-      test: /\.png$/,
-      loader: "file-loader"
-    },
-    { test: /\.woff$/,   loader: "url-loader?limit=10000&minetype=font/woff" },
-    { test: /\.woff2$/,   loader: "url-loader?limit=10000&minetype=font/woff2" },
-    { test: /\.ttf$/,    loader: "file-loader" },
-    { test: /\.eot$/,    loader: "file-loader" },
-    { test: /\.svg$/,    loader: "file-loader" }
-    ]
-  },
-  plugins: [
-    new webpack.optimize.UglifyJsPlugin(),
-    new HtmlWebpackPlugin({
-      filename: `index.html`,
-      template: paths.client.htmlTemplate,
-      inject: 'body'
-    })
-  ],
-  postcss: function () {
-    return [autoprefixer];
-  }
-};
+function htmlPage(wc, filename, template) {
+  wc.plugins.push(new HtmlWebpackPlugin({
+    filename: filename,
+    template: template,
+    inject: 'body'
+  }));
+  return wc;
+}
+
+function webpackDev() {
+  const indexPagePlugin = _.partialRight(htmlPage, 'index.html', paths.client.htmlTemplate);
+  return (_.flow(wpConf.dev, indexPagePlugin))();
+}
+
+function webpackProd() {
+  const indexPagePlugin = _.partialRight(htmlPage, 'index.html', paths.client.htmlTemplate);
+  return (_.flow(wpConf.prod, indexPagePlugin))();
+}
 
 /********************
  * Reusable pipelines
@@ -259,7 +210,7 @@ gulp.task('watch', () => {
       }, () => {
       gulp.src(paths.client.webpackEntrypoint)
         .pipe(plumber())
-        .pipe(webpackStream(webpackDevConf).on('error', function() {this.emit('end')}))
+        .pipe(webpackStream(webpackDev()).on('error', function() {this.emit('end')}))
         .pipe(gulp.dest(clientOut))
         .pipe(plugins.livereload());
     });
@@ -375,13 +326,13 @@ gulp.task('copy:extras', () => {
 
 gulp.task('client:webpack', () => {
   return gulp.src(paths.client.webpackEntrypoint)
-    .pipe(webpackStream(webpackDevConf))
+    .pipe(webpackStream(webpackDev()))
     .pipe(gulp.dest(clientOut));
 });
 
 gulp.task('client:webpack:prod', () => {
   return gulp.src(paths.client.webpackEntrypoint)
-    .pipe(webpackStream(webpackProdConf))
+    .pipe(webpackStream(webpackProd()))
     .pipe(gulp.dest(clientOut));
 });
 
@@ -440,4 +391,9 @@ gulp.task('test:e2e', ['env:test', 'start:server', 'webdriver_update'], cb => {
         }).on('end', () => {
             process.exit();
         });
+});
+
+gulp.task('debug:webpackConf', cb => {
+  console.log('=== DEVELOPMENT ===\n' + JSON.stringify(webpackDev(), null, 2));
+  console.log('=== PRODUCTION ===\n' + JSON.stringify(webpackProd(), null, 2));
 });
