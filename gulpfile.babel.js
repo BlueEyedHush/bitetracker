@@ -44,6 +44,7 @@ const paths = {
             `${clientPath}/**/*.js`,
             `${clientPath}/**/*.jsx`
         ],
+        sharedJs: `${clientPath}/sharedjs`,
         index: {
           entrypoint: `${indexDir}/index.jsx`,
           htmlTemplate: `${clientPath}/index.html`,
@@ -212,7 +213,8 @@ gulp.task('watch', () => {
   const webpackDevIndex = webpackConf(wpConf.dev, paths.client.index);
   const webpackDevApp = webpackConf(wpConf.dev, paths.client.app);
 
-  plugins.watch([`${appDir}/**/*`, paths.client.app.htmlTemplate, `!/**/*${intellijTempFileSuffix}`],{
+  plugins.watch([`${appDir}/**/*`, paths.client.app.htmlTemplate,
+    `!/**/*${intellijTempFileSuffix}`, `${paths.client.sharedJs}/**/*`],{
     name: 'AppWatcher'
   }, () => {
     gulp.src(paths.client.app.entrypoint)
@@ -222,7 +224,8 @@ gulp.task('watch', () => {
       .pipe(plugins.livereload());
   });
 
-  return plugins.watch([`${indexDir}/**/*`, paths.client.index.htmlTemplate, `!/**/*${intellijTempFileSuffix}`],{
+  return plugins.watch([`${indexDir}/**/*`, paths.client.index.htmlTemplate,
+    `!/**/*${intellijTempFileSuffix}`, `${paths.client.sharedJs}/**/*`],{
       name: 'IndexWatcher'
     }, () => {
     gulp.src(paths.client.index.entrypoint)

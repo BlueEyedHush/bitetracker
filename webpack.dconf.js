@@ -1,7 +1,13 @@
 
+import path from 'path';
 import _ from 'lodash';
 import webpack from 'webpack';
 import autoprefixer from 'autoprefixer';
+
+function getClientPath() {
+  const rel = process.env.CLIENT_PATH || './client';
+  return path.resolve(rel);
+}
 
 function base() {
   return {
@@ -30,7 +36,9 @@ function base() {
     plugins: [],
     externals: {},
     resolve: {
-      alias: {}
+      alias: {
+        SHAREDJS: getClientPath() + '/sharedjs'
+      }
     },
     postcss: function () {
       return [autoprefixer];
@@ -68,7 +76,7 @@ function reactKarmaExternals(wc) {
 
 /* so that we can use CLIENT_PATH in frontend test instead of specifying directory directly */
 function karmaClientModuleAlias(wc) {
-  wc.resolve.alias.CLIENT_PATH = process.env.CLIENT_PATH || path.resolve('./client/');
+  wc.resolve.alias.CLIENT_PATH = getClientPath();
   return wc;
 }
 

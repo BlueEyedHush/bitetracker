@@ -52,9 +52,7 @@ export default function(app) {
    */
   if ('test' !== env) {
     app.use(lusca({
-      csrf: {
-        angular: true
-      },
+      csrf: false,
       xframe: 'SAMEORIGIN',
       hsts: {
         maxAge: 31536000, //1 year, in seconds

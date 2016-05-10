@@ -1,7 +1,13 @@
+/* Local authentication strategy configuration */
+
 import passport from 'passport';
 import {Strategy as LocalStrategy} from 'passport-local';
 
 function localAuthenticate(User, email, password, done) {
+  /* verify callback - find, if user with given credentials exists
+  * done(null, user) called on success, 
+  * done(null, false, {msg}) in case of auth failure OR done(err) in case of exception
+  */
   User.findOneAsync({
     email: email.toLowerCase()
   })
@@ -26,10 +32,7 @@ function localAuthenticate(User, email, password, done) {
 }
 
 export function setup(User, config) {
-  passport.use(new LocalStrategy({
-    usernameField: 'email',
-    passwordField: 'password' // this is the virtual field on the model
-  }, function(email, password, done) {
+  passport.use(new LocalStrategy(function(email, password, done) {
     return localAuthenticate(User, email, password, done);
   }));
 }

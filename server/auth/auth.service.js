@@ -1,6 +1,5 @@
 'use strict';
 
-import passport from 'passport';
 import config from '../config/environment';
 import jwt from 'jsonwebtoken';
 import expressJwt from 'express-jwt';
@@ -12,16 +11,17 @@ var validateJwt = expressJwt({
 });
 
 /**
- * Attaches the user object to the request if authenticated
+ * Attaches the user object to the request if authenticated (contains either Auhtorization: Bearer xxx header
+ * or cookie with token)
  * Otherwise returns 403
  */
 export function isAuthenticated() {
   return compose()
     // Validate jwt
     .use(function(req, res, next) {
-      // allow access_token to be passed through query parameter as well
-      if (req.query && req.query.hasOwnProperty('access_token')) {
-        req.headers.authorization = 'Bearer ' + req.query.access_token;
+      // workaround: copy access token from cookie to header
+      if (req.cookies && req.cookies.hasOwnProperty('access_token')) {
+        req.headers.authorization = 'Bearer ' + req.cookies.access_token;
       }
       validateJwt(req, res, next);
     })
@@ -30,7 +30,7 @@ export function isAuthenticated() {
       User.findByIdAsync(req.user._id)
         .then(user => {
           if (!user) {
-            return res.status(401).end();
+            return res.status(403).end();
           }
           req.user = user;
           next();
