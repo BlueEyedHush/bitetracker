@@ -1,8 +1,8 @@
 
-import path from 'path';
-import _ from 'lodash';
-import webpack from 'webpack';
-import autoprefixer from 'autoprefixer';
+const path = require('path');
+const _ = require('lodash');
+const webpack = require('webpack');
+const autoprefixer = require('autoprefixer');
 
 function getClientPath() {
   const rel = process.env.CLIENT_PATH || './client';
@@ -80,6 +80,12 @@ function karmaClientModuleAlias(wc) {
   return wc;
 }
 
-export const dev = _.flow(base, sourceMaps);
-export const prod = _.flow(base, uglify);
-export const karma =_.flow(base, inlineSourceMaps, jsonLoader, reactKarmaExternals, karmaClientModuleAlias);
+const dev = _.flow(base, sourceMaps);
+const prod = _.flow(base, uglify);
+const karma =_.flow(base, inlineSourceMaps, jsonLoader, reactKarmaExternals, karmaClientModuleAlias);
+
+module.exports = {
+  dev: dev,
+  prod: prod,
+  karma: karma
+};

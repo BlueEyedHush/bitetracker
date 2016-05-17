@@ -1,6 +1,6 @@
 
-var path = require('path');
-import * as wpConf from './webpack.dconf';
+const path = require('path');
+const wpConf = require('./webpack.dconf');
 
 /* to determine actual list of browsers on which frontend tests should be run intersection of this array and
  * autodetection results is taken. Currently avaliable:
@@ -12,7 +12,8 @@ import * as wpConf from './webpack.dconf';
  * - PhantomJS
  * - IE (only Windows)
  * */
-var browserFilter = ['Chrome', 'Firefox', 'Opera', 'Safari', 'PhantomJS', 'IE'];
+const envBF = process.env.BROWSER_FILTER;
+const browserFilter = envBF ? eval(envBF) : ['Chrome', 'Firefox', 'Opera', 'Safari', 'PhantomJS', 'IE'];
 
 module.exports = function(config) {
   config.set({
@@ -41,15 +42,6 @@ module.exports = function(config) {
           result.push('IE9');
         }
 
-        //Remove PhantomJS if another browser has been detected
-        if (availableBrowser.length > 1 && availableBrowser.indexOf('PhantomJS')>-1) {
-          var i = result.indexOf('PhantomJS');
-
-          if (i !== -1) {
-            result.splice(i, 1);
-          }
-        }
-
         console.log("Browsers remaiming after applying filter: " + result.toString());
 
         return result;
@@ -70,14 +62,16 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'tests/client/componentsTests/**/*.jsx'
+      'tests/client/**/*.jsx',
+      'tests/client/**/*.js'
     ],
 
     // list of files / patterns to exclude
     exclude: [],
 
     preprocessors: {
-      'tests/client/componentsTests/**/*.jsx': ['webpack', 'sourcemap']
+      'tests/client/**/*.jsx': ['webpack', 'sourcemap'],
+      'tests/client/**/*.js': ['webpack', 'sourcemap']
     },
 
     // web server port
