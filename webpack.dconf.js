@@ -80,9 +80,18 @@ function karmaClientModuleAlias(wc) {
   return wc;
 }
 
+function babelRewirePlugin(wc) {
+  wc.module.loaders[0].query = {
+    "presets": [ "es2015", "react" ],
+    "plugins": ["rewire"]
+  }
+  
+  return wc;
+}
+
 const dev = _.flow(base, sourceMaps);
 const prod = _.flow(base, uglify);
-const karma =_.flow(base, inlineSourceMaps, jsonLoader, reactKarmaExternals, karmaClientModuleAlias);
+const karma =_.flow(base, inlineSourceMaps, jsonLoader, reactKarmaExternals, karmaClientModuleAlias, babelRewirePlugin);
 
 module.exports = {
   dev: dev,

@@ -1,7 +1,7 @@
 
-const Cookies = require('js-cookie');
-const CookieHelper = require('./cookies');
-const ex = require('./exceptions').createException;
+import Cookies from 'js-cookie';
+import {NEVER as NEVER_EXPIRE} from './cookies';
+import {createException as ex} from './exceptions';
 
 const LOCAL_AUTH_URL = '/auth/local';
 const USERID_COOKIE_NAME = 'user';
@@ -57,8 +57,8 @@ export function login(username, passwd) {
         return [_, json];
     })
     .then(([_, json]) => {
-      Cookies.set(USERID_COOKIE_NAME, json.userId, {expires: CookieHelper.NEVER});
-      Cookies.set(REDIRURL_COOKIE_NAME, json.redirectUrl, {expires: CookieHelper.NEVER});
+      Cookies.set(USERID_COOKIE_NAME, json.userId, {expires: NEVER_EXPIRE});
+      Cookies.set(REDIRURL_COOKIE_NAME, json.redirectUrl, {expires: NEVER_EXPIRE});
 
       return [_, json];
     });

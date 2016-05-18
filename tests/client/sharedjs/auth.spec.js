@@ -1,31 +1,38 @@
 
 /* promises polyfill for babel */
-require('core-js/es6/promise');
+import 'core-js/es6/promise';
 
-require('whatwg-fetch');
-const fetchMock = require('fetch-mock');
-const Auth = require('CLIENT_PATH/sharedjs/auth');
-const Cookies = require('js-cookie');
+/* even though we use fetch-mock, it relies on Request/Response classes, which must be
+ * either provided by environment, or polyfilled */
+import 'whatwg-fetch';
+import fetchMock from 'fetch-mock';
 
-const LOCAL_AUTH_SERVICE_URL = '/auth/local';
+import {login, EX as authEx, __RewireAPI__ as authRewire} from 'CLIENT_PATH/sharedjs/auth';
+import cookies from 'js-cookie';
 
 const TEST_RESPONSE_PAYLOAD = {userId: '123', redirectUrl: '/redirect.html'};
 const CREDENTIALS = {username: 'test', password: 'pass'};
 
-var promise;
 
+function removeCookies() {
+  cookies.remove('user');
+  cookies.remove('redirUrl');
+}
+
+var promise;
 function setupWithRespone(response) {
-  Cookies.remove('user');
-  Cookies.remove('redirUrl');
+  removeCookies();
   fetchMock.restore();
-  fetchMock.mock(LOCAL_AUTH_SERVICE_URL, 'POST', response);
-  promise = Auth.login(CREDENTIALS.username, CREDENTIALS.password);
+  fetchMock.mock(authRewire.__get__('LOCAL_AUTH_URL'), 'POST', response);
+  promise = login(CREDENTIALS.username, CREDENTIALS.password);
 }
 
 
 describe('auth-test', function() {
   describe('http200', function() {
     before(() => setupWithRespone(TEST_RESPONSE_PAYLOAD));
+
+    after(() => removeCookies());
 
     it('promise should resolve on HTTP 200', function() {
       return promise.should.be.fulfilled;
@@ -37,19 +44,19 @@ describe('auth-test', function() {
     });
 
     it('local auth service is called', function() {
-      expect(fetchMock.called(LOCAL_AUTH_SERVICE_URL)).to.be.true;
+      expect(fetchMock.called(authRewire.__get__('LOCAL_AUTH_URL'))).to.be.true;
     });
 
     it('correct credentials should be sent to login service', function() {
-      expect(JSON.parse(fetchMock.lastOptions(LOCAL_AUTH_SERVICE_URL).body)).to.deep.equal(CREDENTIALS);
+      expect(JSON.parse(fetchMock.lastOptions(authRewire.__get__('LOCAL_AUTH_URL')).body)).to.deep.equal(CREDENTIALS);
     });
 
     it('when promise resolves, "user" cookie should be set', function() {
-      expect(Cookies.get('user')).to.be.equal(TEST_RESPONSE_PAYLOAD.userId);
+      expect(cookies.get(authRewire.__get__('USERID_COOKIE_NAME'))).to.be.equal(TEST_RESPONSE_PAYLOAD.userId);
     });
 
     it('when promise resolves, "redirUrl" cookie should be set', function() {
-      expect(Cookies.get('redirUrl')).to.be.equal(TEST_RESPONSE_PAYLOAD.redirectUrl);
+      expect(cookies.get(authRewire.__get__('REDIRURL_COOKIE_NAME'))).to.be.equal(TEST_RESPONSE_PAYLOAD.redirectUrl);
     });
   });
 
@@ -58,7 +65,7 @@ describe('auth-test', function() {
 
     it('promise should rejected on HTTP 403 with correct error type', function() {
       return promise.should.be.rejected
-        .and.eventually.have.property('name', Auth.EX.INCORRECT_CREDENTIALS);
+        .and.eventually.have.property('name', authEx.INCORRECT_CREDENTIALS);
     });
   });
 
@@ -67,7 +74,7 @@ describe('auth-test', function() {
 
     it('promise should rejected on HTTP 500 with correct error type', function() {
       return promise.should.be.rejected
-        .and.eventually.have.property('name', Auth.EX.UNKNOWN);
+        .and.eventually.have.property('name', authEx.UNKNOWN);
     });
   });
 
@@ -76,7 +83,7 @@ describe('auth-test', function() {
 
     it('when payload malformed, promise should rejected UNKNOWN error type', function() {
       return promise.should.be.rejected
-        .and.eventually.have.property('name', Auth.EX.UNKNOWN);
+        .and.eventually.have.property('name', authEx.UNKNOWN);
     });
   });
 });

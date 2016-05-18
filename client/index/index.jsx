@@ -4,17 +4,17 @@ import 'SHAREDJS/fetch-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Login from './components/Login.jsx';
-import * as Auth from 'SHAREDJS/auth';
+import * as auth from 'SHAREDJS/auth';
 import {ensureCookiesEnabled} from 'SHAREDJS/cookies';
 
-require('./index.scss');
+import './index.scss';
 
 ensureCookiesEnabled(index);
 
 function index() {
-  if(Auth.isCookiePresent()) {
-    window.location.href = Auth.getCachedRedirectionUrl();
+  if(auth.isCookiePresent()) {
+    window.location.href = auth.getCachedRedirectionUrl();
   } else {
-    ReactDOM.render(<Login />, document.getElementById('content'));
+    ReactDOM.render(<Login authService={auth}/>, document.getElementById('content'));
   }
 }

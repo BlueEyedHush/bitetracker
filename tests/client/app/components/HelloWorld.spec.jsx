@@ -1,6 +1,6 @@
 
 import React from 'react';
-import {shallow, mount} from 'enzyme';
+import {mount} from 'enzyme';
 import HelloWorld from 'CLIENT_PATH/app/components/HelloWorld.jsx';
 
 describe('<HelloWorld />', () => {

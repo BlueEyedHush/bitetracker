@@ -3,18 +3,19 @@ import FormGroup from 'react-bootstrap/lib/FormGroup';
 import FormControl from 'react-bootstrap/lib/FormControl';
 import Button from 'react-bootstrap/lib/Button';
 import Alert from 'react-bootstrap/lib/Alert';
-import * as Auth from 'SHAREDJS/auth.js';
+import {redirect} from 'SHAREDJS/redir';
 
-const ERROR_INCORRECT = 'incorrect';
-const ERROR_UNKNOWN = 'unknown';
-const SUCCESS = 'success';
+const NOERROR = 'NOERROR';
+
+const S_INCORRECT_CREDS = 'Username or password is incorrect!';
+const S_UNKNOWN_ERROR = 'Unknown error occured. Please refresh the page and try again.';
 
 const LoginErrorAlert = React.createClass({
    render() {
-    if(this.props.errorType === ERROR_INCORRECT) {
-      return (<Alert bsStyle="danger">Username or password is incorrect!</Alert>);
-    } else if(this.props.errorType === ERROR_UNKNOWN) {
-      return (<Alert bsStyle="danger">Unknown error occured. Please refresh the page and try again.</Alert>);
+    if(this.props.errorType === 'INCORRECT_CREDENTIALS') {
+      return (<Alert bsStyle="danger">{S_INCORRECT_CREDS}</Alert>);
+    } else if(this.props.errorType === 'UNKNOWN') {
+      return (<Alert bsStyle="danger">{S_UNKNOWN_ERROR}</Alert>);
     } else {
       return null;
     }
@@ -26,24 +27,26 @@ export default React.createClass({
     return {
       username: '',
       password: '',
-      status: SUCCESS
+      status: NOERROR
     };
   },
 
   render() {
     return (
       <form>
-        <FormGroup controlId="login">
+        <FormGroup>
           <LoginErrorAlert errorType={this.state.status}/>
-          <FormControl type="text"
+          <FormControl id="usernameForm"
+                       type="text"
                        value={this.state.username}
                        placeholder="Username"
                        onChange={this.usernameChanged}/>
-          <FormControl type="password"
+          <FormControl id="passwordForm"
+                       type="password"
                        value={this.state.password}
                        placeholder="Password"
-                        onChange={this.passwordChanged}/>
-          <Button bsStyle="primary" onClick={this.submit}>Submit</Button>
+                       onChange={this.passwordChanged}/>
+          <Button id="submitButton" bsStyle="primary" onClick={this.submit}>Submit</Button>
         </FormGroup>
       </form>
     );
@@ -58,17 +61,14 @@ export default React.createClass({
   },
 
   submit(e) {
-    Auth.login(this.state.username, this.state.password)
-      .then((redirUrl) => {
-        window.location.href = redirUrl;
+    this.props.authService.login(this.state.username, this.state.password)
+      .then(([_, json]) => {
+        redirect(json.redirectUrl);
+        /* usually this won't execute, but I add this for completness */
+        this.setState({status: NOERROR})
       })
       .catch((reason) => {
-        if(reason.name === 'incorrect_credentials') {
-          this.setState({status: ERROR_INCORRECT});
-        } else if(reason.name === 'unknown') {
-          console.log(reason.message);
-          this.setState({status: ERROR_UNKNOWN});
-        }
+        this.setState({status: reason.name});
     });
   }
 });
