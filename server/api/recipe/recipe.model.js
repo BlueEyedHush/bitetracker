@@ -1,32 +1,32 @@
 'use strict';
 
 var mongoose = require('bluebird').promisifyAll(require('mongoose')),
-    Schema = mongoose.Schema;
+  Schema = mongoose.Schema;
 
 var RecipeSchema = new Schema({
   title: String,
   private: {
     type: Boolean,
-    default: true
+    default: true,
   },
   date: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   ingredients: [{
     name: String,
-    qty: Number
+    qty: Number,
   }],
   body: String,
   tags: {
     type: [String],
-    index: true
+    index: true,
   },
   author: String,
   image: {
     type: String,
-    default: 'default.png'
-  }
+    default: 'default.png',
+  },
 });
 
 export default mongoose.model('Recipe', RecipeSchema);

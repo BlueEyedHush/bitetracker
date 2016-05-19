@@ -15,8 +15,8 @@ function mockSuccessfullResponse() {
 }
 
 describe('<Login />', () => {
-  var authSpy;
-  var redirectSpy;
+  let authSpy;
+  let redirectSpy;
   before(() => {
     authSpy = {login: sinon.stub()};
     redirectSpy = sinon.spy();
@@ -24,23 +24,23 @@ describe('<Login />', () => {
   });
 
   it('component contains submit button', () => {
-    const wrapper = mount(<Login authService={authSpy}/>);
+    const wrapper = mount(<Login authService={authSpy} />);
     expect(wrapper).to.have.descendants('#submitButton');
   });
 
   it('component contains username form', () => {
-    const wrapper = mount(<Login authService={authSpy}/>);
+    const wrapper = mount(<Login authService={authSpy} />);
     expect(wrapper).to.have.descendants('#usernameForm');
   });
 
   it('component contains password form', () => {
-    const wrapper = mount(<Login authService={authSpy}/>);
+    const wrapper = mount(<Login authService={authSpy} />);
     expect(wrapper).to.have.descendants('#passwordForm');
   });
 
   it('correct credentials should be passed to auth module', () => {
     authSpy.login.reset();
-    const wrapper = mount(<Login authService={authSpy}/>);
+    const wrapper = mount(<Login authService={authSpy} />);
     authSpy.login.returns(Promise.reject(new Error('error')));
 
     wrapper.find('#usernameForm').get(0).value = 'username';
@@ -56,7 +56,7 @@ describe('<Login />', () => {
     authSpy.login.reset();
     redirectSpy.reset();
 
-    const wrapper = mount(<Login authService={authSpy}/>);
+    const wrapper = mount(<Login authService={authSpy} />);
     authSpy.login.returns(Promise.resolve(mockSuccessfullResponse()));
 
     wrapper.find('#submitButton').simulate('click');
@@ -69,7 +69,7 @@ describe('<Login />', () => {
 
   it('on INCORRECT_CREDENTIALS error correct alert should appear', (done) => {
     authSpy.login.reset();
-    const wrapper = mount(<Login authService={authSpy}/>);
+    const wrapper = mount(<Login authService={authSpy} />);
     authSpy.login.returns(Promise.reject(ex('INCORRECT_CREDENTIALS', '')));
 
     wrapper.find('#submitButton').simulate('click');
@@ -82,7 +82,7 @@ describe('<Login />', () => {
 
   it('on UNKNOWN error correct alert should appear', (done) => {
     authSpy.login.reset();
-    const wrapper = mount(<Login authService={authSpy}/>);
+    const wrapper = mount(<Login authService={authSpy} />);
     authSpy.login.returns(Promise.reject(ex('UNKNOWN', '')));
 
     wrapper.find('#submitButton').simulate('click');

@@ -15,7 +15,7 @@ import Thing from './thing.model';
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
   return function(entity) {
-    if (entity) {
+    if(entity) {
       res.status(statusCode).json(entity);
     }
   };
@@ -33,7 +33,7 @@ function saveUpdates(updates) {
 
 function removeEntity(res) {
   return function(entity) {
-    if (entity) {
+    if(entity) {
       return entity.removeAsync()
         .then(() => {
           res.status(204).end();
@@ -44,7 +44,7 @@ function removeEntity(res) {
 
 function handleEntityNotFound(res) {
   return function(entity) {
-    if (!entity) {
+    if(!entity) {
       res.status(404).end();
       return null;
     }
@@ -83,7 +83,7 @@ export function create(req, res) {
 
 // Updates an existing Thing in the DB
 export function update(req, res) {
-  if (req.body._id) {
+  if(req.body._id) {
     delete req.body._id;
   }
   Thing.findByIdAsync(req.params.id)

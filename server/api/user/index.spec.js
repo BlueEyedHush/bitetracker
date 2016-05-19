@@ -8,7 +8,7 @@ var userCtrlStub = {
   me: 'userCtrl.me',
   changePassword: 'userCtrl.changePassword',
   show: 'userCtrl.show',
-  create: 'userCtrl.create'
+  create: 'userCtrl.create',
 };
 
 var authServiceStub = {
@@ -17,14 +17,14 @@ var authServiceStub = {
   },
   hasRole(role) {
     return 'authService.hasRole.' + role;
-  }
+  },
 };
 
 var routerStub = {
   get: sinon.spy(),
   put: sinon.spy(),
   post: sinon.spy(),
-  delete: sinon.spy()
+  delete: sinon.spy(),
 };
 
 // require the index with our stubbed out modules
@@ -32,10 +32,10 @@ var userIndex = proxyquire('./index', {
   'express': {
     Router() {
       return routerStub;
-    }
+    },
   },
   './user.controller': userCtrlStub,
-  '../../auth/auth.service': authServiceStub
+  '../../auth/auth.service': authServiceStub,
 }).default;
 
 describe('User API Router:', function() {

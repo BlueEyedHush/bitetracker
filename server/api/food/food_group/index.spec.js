@@ -3,7 +3,7 @@
 var proxyquire = require('proxyquire').noPreserveCache();
 
 var foodGroupCtrlStub = {
-  index: 'foodGroupCtrl.index'
+  index: 'foodGroupCtrl.index',
 };
 
 var routerStub = {
@@ -11,7 +11,7 @@ var routerStub = {
   put: sinon.spy(),
   patch: sinon.spy(),
   post: sinon.spy(),
-  delete: sinon.spy()
+  delete: sinon.spy(),
 };
 
 // require the index with our stubbed out modules
@@ -19,9 +19,9 @@ var foodGroupIndex = proxyquire('./index.js', {
   'express': {
     Router: function() {
       return routerStub;
-    }
+    },
   },
-  './food_group.controller': foodGroupCtrlStub
+  './food_group.controller': foodGroupCtrlStub,
 }).default;
 
 describe('FoodGroup API Router:', function() {

@@ -9,7 +9,7 @@ function validationError(res, statusCode) {
   statusCode = statusCode || 422;
   return function(err) {
     res.status(statusCode).json(err);
-  }
+  };
 }
 
 function handleError(res, statusCode) {
@@ -40,10 +40,10 @@ export function create(req, res, next) {
   newUser.role = 'user';
   newUser.saveAsync()
     .spread(function(user) {
-      var token = jwt.sign({ _id: user._id }, config.secrets.session, {
-        expiresIn: 60 * 60 * 5
+      var token = jwt.sign({_id: user._id}, config.secrets.session, {
+        expiresIn: 60 * 60 * 5,
       });
-      res.json({ token });
+      res.json({token});
     })
     .catch(validationError(res));
 }
@@ -56,7 +56,7 @@ export function show(req, res, next) {
 
   User.findByIdAsync(userId)
     .then(user => {
-      if (!user) {
+      if(!user) {
         return res.status(404).end();
       }
       res.json(user.profile);
@@ -86,7 +86,7 @@ export function changePassword(req, res, next) {
 
   User.findByIdAsync(userId)
     .then(user => {
-      if (user.authenticate(oldPass)) {
+      if(user.authenticate(oldPass)) {
         user.password = newPass;
         return user.saveAsync()
           .then(() => {
@@ -105,9 +105,9 @@ export function changePassword(req, res, next) {
 export function me(req, res, next) {
   var userId = req.user._id;
 
-  User.findOneAsync({ _id: userId }, '-salt -password')
+  User.findOneAsync({_id: userId}, '-salt -password')
     .then(user => { // don't ever give out the password or salt
-      if (!user) {
+      if(!user) {
         return res.status(401).end();
       }
       res.json(user);
@@ -116,12 +116,12 @@ export function me(req, res, next) {
 }
 
 export function find(req, res, next) {
-  User.findOneAsync({ name: req.params.name }, '-salt -password')
+  User.findOneAsync({name: req.params.name}, '-salt -password')
     .then(user => {
-      if (!user)
+      if(!user)
         return res.status(401).end();
       res.json(user);
-    })
+    });
 }
 
 /**

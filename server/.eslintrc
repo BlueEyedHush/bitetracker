@@ -1,0 +1,20 @@
+{
+  "extends": "../.eslintrc",
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": "server/webpack.eslint.js"
+      }
+    }
+  },
+  "env": {
+    "browser": false,
+    "node": true
+  },
+  "rules": {
+    "strict": "off",
+    "new-cap": ["error", {
+      "capIsNewExceptions": ["Router"]
+    }]
+  }
+}

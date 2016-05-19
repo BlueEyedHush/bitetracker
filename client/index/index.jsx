@@ -9,12 +9,12 @@ import {ensureCookiesEnabled} from 'SHAREDJS/cookies';
 
 import './index.scss';
 
-ensureCookiesEnabled(index);
-
 function index() {
   if(auth.isCookiePresent()) {
     window.location.href = auth.getCachedRedirectionUrl();
   } else {
-    ReactDOM.render(<Login authService={auth}/>, document.getElementById('content'));
+    ReactDOM.render(<Login authService={auth} />, document.getElementById('content'));
   }
 }
+
+ensureCookiesEnabled(index);

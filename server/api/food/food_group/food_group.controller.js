@@ -13,14 +13,14 @@ import _ from 'lodash';
 import config from '../../../config/environment';
 
 var request = require('request-promise').defaults({
-  baseUrl: config.ndb.baseUrl
+  baseUrl: config.ndb.baseUrl,
 });
-var qs = { api_key: config.ndb.apiKey };
+var qs = {api_key: config.ndb.apiKey};
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
-  return function(entity) {
-    if (entity) {
+  return function onSuccess(entity) {
+    if(entity) {
       res.status(statusCode).json(JSON.parse(entity));
     }
   };
@@ -28,7 +28,7 @@ function respondWithResult(res, statusCode) {
 
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
-  return function(err) {
+  return function onError(err) {
     res.status(statusCode).send(err);
   };
 }
@@ -36,8 +36,8 @@ function handleError(res, statusCode) {
 // Gets a list of FoodGroups
 export function index(req, res) {
   request.get({
-      url: '/list',
-      qs: _.merge(qs, { lt: 'g' })
+    url: '/list',
+    qs: _.merge(qs, {lt: 'g'}),
   })
     .then(respondWithResult(res))
     .catch(handleError(res));

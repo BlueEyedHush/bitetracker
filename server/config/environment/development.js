@@ -6,10 +6,10 @@ module.exports = {
 
   // MongoDB connection options
   mongo: {
-    uri: 'mongodb://localhost/fooddiary-dev'
+    uri: 'mongodb://localhost/fooddiary-dev',
   },
 
   // Seed database on startup
-  seedDB: true
+  seedDB: true,
 
 };

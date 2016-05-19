@@ -11,13 +11,13 @@ router
     failureRedirect: '/signup',
     scope: [
       'profile',
-      'email'
+      'email',
     ],
-    session: false
+    session: false,
   }))
   .get('/callback', passport.authenticate('google', {
     failureRedirect: '/signup',
-    session: false
+    session: false,
   }), setTokenCookie);
 
 export default router;

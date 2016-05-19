@@ -11,64 +11,75 @@ const S_INCORRECT_CREDS = 'Username or password is incorrect!';
 const S_UNKNOWN_ERROR = 'Unknown error occured. Please refresh the page and try again.';
 
 const LoginErrorAlert = React.createClass({
-   render() {
-    if(this.props.errorType === 'INCORRECT_CREDENTIALS') {
+  propTypes: {
+    errorType: React.PropTypes.string.isRequired,
+  },
+  render() {
+    if (this.props.errorType === 'INCORRECT_CREDENTIALS') {
       return (<Alert bsStyle="danger">{S_INCORRECT_CREDS}</Alert>);
-    } else if(this.props.errorType === 'UNKNOWN') {
+    } else if (this.props.errorType === 'UNKNOWN') {
       return (<Alert bsStyle="danger">{S_UNKNOWN_ERROR}</Alert>);
     } else {
       return null;
     }
-  }
+  },
 });
 
 export default React.createClass({
+  propTypes: {
+    authService: React.PropTypes.object.isRequired,
+  },
+
   getInitialState() {
     return {
       username: '',
       password: '',
-      status: NOERROR
+      status: NOERROR,
     };
+  },
+
+  usernameChanged(e) {
+    this.setState({username: e.target.value});
+  },
+
+  passwordChanged(e) {
+    this.setState({password: e.target.value});
+  },
+
+  submit(_) {
+    this.props.authService.login(this.state.username, this.state.password)
+      .then(([__, json]) => {
+        redirect(json.redirectUrl);
+        /* usually this won't execute, but I add this for completness */
+        this.setState({status: NOERROR});
+      })
+      .catch((reason) => {
+        this.setState({status: reason.name});
+      });
   },
 
   render() {
     return (
       <form>
         <FormGroup>
-          <LoginErrorAlert errorType={this.state.status}/>
-          <FormControl id="usernameForm"
-                       type="text"
-                       value={this.state.username}
-                       placeholder="Username"
-                       onChange={this.usernameChanged}/>
-          <FormControl id="passwordForm"
-                       type="password"
-                       value={this.state.password}
-                       placeholder="Password"
-                       onChange={this.passwordChanged}/>
+          <LoginErrorAlert errorType={this.state.status} />
+          <FormControl
+            id="usernameForm"
+            type="text"
+            value={this.state.username}
+            placeholder="Username"
+            onChange={this.usernameChanged}
+          />
+          <FormControl
+            id="passwordForm"
+            type="password"
+            value={this.state.password}
+            placeholder="Password"
+            onChange={this.passwordChanged}
+          />
           <Button id="submitButton" bsStyle="primary" onClick={this.submit}>Submit</Button>
         </FormGroup>
       </form>
     );
   },
-
-  usernameChanged(e) {
-    this.setState({ username: e.target.value });
-  },
-
-  passwordChanged(e) {
-    this.setState({ password: e.target.value });
-  },
-
-  submit(e) {
-    this.props.authService.login(this.state.username, this.state.password)
-      .then(([_, json]) => {
-        redirect(json.redirectUrl);
-        /* usually this won't execute, but I add this for completness */
-        this.setState({status: NOERROR})
-      })
-      .catch((reason) => {
-        this.setState({status: reason.name});
-    });
-  }
 });

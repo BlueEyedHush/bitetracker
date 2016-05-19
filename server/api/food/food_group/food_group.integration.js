@@ -16,7 +16,7 @@ describe('FoodGroup API:', function() {
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
-          if (err) {
+          if(err) {
             return done(err);
           }
           foodGroups = res.body;
@@ -36,12 +36,12 @@ describe('FoodGroup API:', function() {
         .post('/api/food_groups')
         .send({
           name: 'New FoodGroup',
-          info: 'This is the brand new foodGroup!!!'
+          info: 'This is the brand new foodGroup!!!',
         })
         .expect(201)
         .expect('Content-Type', /json/)
         .end((err, res) => {
-          if (err) {
+          if(err) {
             return done(err);
           }
           newFoodGroup = res.body;
@@ -65,7 +65,7 @@ describe('FoodGroup API:', function() {
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
-          if (err) {
+          if(err) {
             return done(err);
           }
           foodGroup = res.body;
@@ -92,12 +92,12 @@ describe('FoodGroup API:', function() {
         .put('/api/food_groups/' + newFoodGroup._id)
         .send({
           name: 'Updated FoodGroup',
-          info: 'This is the updated foodGroup!!!'
+          info: 'This is the updated foodGroup!!!',
         })
         .expect(200)
         .expect('Content-Type', /json/)
         .end(function(err, res) {
-          if (err) {
+          if(err) {
             return done(err);
           }
           updatedFoodGroup = res.body;
@@ -123,7 +123,7 @@ describe('FoodGroup API:', function() {
         .delete('/api/food_groups/' + newFoodGroup._id)
         .expect(204)
         .end((err, res) => {
-          if (err) {
+          if(err) {
             return done(err);
           }
           done();
@@ -135,7 +135,7 @@ describe('FoodGroup API:', function() {
         .delete('/api/food_groups/' + newFoodGroup._id)
         .expect(404)
         .end((err, res) => {
-          if (err) {
+          if(err) {
             return done(err);
           }
           done();

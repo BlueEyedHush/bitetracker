@@ -27,7 +27,7 @@ export default function(app) {
   app.set('views', config.root + '/server/views');
   app.set('view engine', 'jade');
   app.use(compression());
-  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(bodyParser.urlencoded({extended: false}));
   app.use(bodyParser.json());
   app.use(methodOverride());
   app.use(cookieParser());
@@ -42,40 +42,40 @@ export default function(app) {
     resave: false,
     store: new mongoStore({
       mongooseConnection: mongoose.connection,
-      db: 'food-diary'
-    })
+      db: 'food-diary',
+    }),
   }));
 
   /**
    * Lusca - express server security
    * https://github.com/krakenjs/lusca
    */
-  if ('test' !== env) {
+  if('test' !== env) {
     app.use(lusca({
       csrf: false,
       xframe: 'SAMEORIGIN',
       hsts: {
-        maxAge: 31536000, //1 year, in seconds
+        maxAge: 31536000, // 1 year, in seconds
         includeSubDomains: true,
-        preload: true
+        preload: true,
       },
-      xssProtection: true
+      xssProtection: true,
     }));
   }
 
   app.set('appPath', config.clientRoot);
 
-  if ('production' === env) {
+  if('production' === env) {
     app.use(favicon(path.join(config.clientRoot, 'favicon.ico')));
     app.use(express.static(app.get('appPath')));
     app.use(morgan('dev'));
   }
 
-  if ('development' === env) {
+  if('development' === env) {
     app.use(require('connect-livereload')());
   }
 
-  if ('development' === env || 'test' === env) {
+  if('development' === env || 'test' === env) {
     app.use(express.static(app.get('appPath')));
     app.use(morgan('dev'));
     app.use(errorHandler()); // Error handler - has to be last

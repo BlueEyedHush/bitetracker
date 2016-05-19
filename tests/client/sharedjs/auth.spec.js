@@ -19,7 +19,7 @@ function removeCookies() {
   cookies.remove('redirUrl');
 }
 
-var promise;
+let promise;
 function setupWithRespone(response) {
   removeCookies();
   fetchMock.restore();
@@ -28,60 +28,63 @@ function setupWithRespone(response) {
 }
 
 
-describe('auth-test', function() {
-  describe('http200', function() {
+describe('auth-test', () => {
+  describe('http200', () => {
     before(() => setupWithRespone(TEST_RESPONSE_PAYLOAD));
 
     after(() => removeCookies());
 
-    it('promise should resolve on HTTP 200', function() {
+    it('promise should resolve on HTTP 200', () => {
       return promise.should.be.fulfilled;
     });
 
-    it('promise should be resolved with correct argument: [resp, json]', function() {
+    it('promise should be resolved with correct argument: [resp, json]', () => {
       return promise.should.be.fulfilled
         .and.eventually.have.keys('0', '1'); /* two-element array */
     });
 
-    it('local auth service is called', function() {
+    it('local auth service is called', () => {
       expect(fetchMock.called(authRewire.__get__('LOCAL_AUTH_URL'))).to.be.true;
     });
 
-    it('correct credentials should be sent to login service', function() {
-      expect(JSON.parse(fetchMock.lastOptions(authRewire.__get__('LOCAL_AUTH_URL')).body)).to.deep.equal(CREDENTIALS);
+    it('correct credentials should be sent to login service', () => {
+      expect(JSON.parse(fetchMock.lastOptions(authRewire.__get__('LOCAL_AUTH_URL')).body))
+        .to.deep.equal(CREDENTIALS);
     });
 
-    it('when promise resolves, "user" cookie should be set', function() {
-      expect(cookies.get(authRewire.__get__('USERID_COOKIE_NAME'))).to.be.equal(TEST_RESPONSE_PAYLOAD.userId);
+    it('when promise resolves, "user" cookie should be set', () => {
+      expect(cookies.get(authRewire.__get__('USERID_COOKIE_NAME')))
+        .to.be.equal(TEST_RESPONSE_PAYLOAD.userId);
     });
 
-    it('when promise resolves, "redirUrl" cookie should be set', function() {
-      expect(cookies.get(authRewire.__get__('REDIRURL_COOKIE_NAME'))).to.be.equal(TEST_RESPONSE_PAYLOAD.redirectUrl);
+    it('when promise resolves, "redirUrl" cookie should be set', () => {
+      expect(cookies.get(authRewire.__get__('REDIRURL_COOKIE_NAME')))
+        .to.be.equal(TEST_RESPONSE_PAYLOAD.redirectUrl);
     });
   });
 
-  describe('http403', function() {
+  describe('http403', () => {
     before(() => setupWithRespone({status: 403, body: {message: 'any message'}}));
 
-    it('promise should rejected on HTTP 403 with correct error type', function() {
+    it('promise should rejected on HTTP 403 with correct error type', () => {
       return promise.should.be.rejected
         .and.eventually.have.property('name', authEx.INCORRECT_CREDENTIALS);
     });
   });
 
-  describe('http500', function() {
+  describe('http500', () => {
     before(() => setupWithRespone(500));
 
-    it('promise should rejected on HTTP 500 with correct error type', function() {
+    it('promise should rejected on HTTP 500 with correct error type', () => {
       return promise.should.be.rejected
         .and.eventually.have.property('name', authEx.UNKNOWN);
     });
   });
 
-  describe('http200 with malformed payload', function() {
+  describe('http200 with malformed payload', () => {
     before(() => setupWithRespone('{abc'));
 
-    it('when payload malformed, promise should rejected UNKNOWN error type', function() {
+    it('when payload malformed, promise should rejected UNKNOWN error type', () => {
       return promise.should.be.rejected
         .and.eventually.have.property('name', authEx.UNKNOWN);
     });

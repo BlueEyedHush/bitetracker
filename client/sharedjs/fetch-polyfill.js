@@ -1,4 +1,4 @@
 
-if(typeof(fetch) == 'undefined') {
+if(typeof(fetch) === 'undefined') {
   require('whatwg-fetch');
 }

@@ -32,47 +32,50 @@ var plugins = gulpLoadPlugins();
 const out = 'build';
 const clientPath = 'client';
 const serverPath = 'server';
+const clientTestPath = 'tests/client';
 const clientOut = `${out}/client`;
 const serverOut = `${out}/server`;
 const indexDir = `${clientPath}/index`;
 const appDir = `${clientPath}/app`;
 
 const paths = {
-    client: {
-        // what will be linted
-        linting: [
-            `${clientPath}/**/*.js`,
-            `${clientPath}/**/*.jsx`
-        ],
-        sharedJs: `${clientPath}/sharedjs`,
-        index: {
-          entrypoint: `${indexDir}/index.jsx`,
-          htmlTemplate: `${clientPath}/index.html`,
-          outputPageName: 'index.html'
-        },
-        app: {
-          entrypoint: `${appDir}/app.jsx`,
-          htmlTemplate: `${clientPath}/app.html`,
-          outputPageName: 'app.html'
-        },
-        test: [`${clientPath}/{app,components}/**/*.{spec,mock}.js`],
-        e2e: ['e2e/**/*.spec.js'],
-        // copied to client directory without processing
-        extras: [
-          `${clientPath}/favicon.ico`,
-          `${clientPath}/robots.txt`,
-          `${clientPath}/.htaccess`
-        ]
+  client: {
+    // what will be linted
+    linting: [
+      `${clientPath}/**/*.js`,
+      `${clientPath}/**/*.jsx`,
+      `${clientTestPath}/**/*.js`,
+      `${clientTestPath}/**/*.jsx`,
+    ],
+    sharedJs: `${clientPath}/sharedjs`,
+    index: {
+      entrypoint: `${indexDir}/index.jsx`,
+      htmlTemplate: `${clientPath}/index.html`,
+      outputPageName: 'index.html'
     },
-    server: {
-        scripts: [`${serverPath}/**/!(*.spec|*.integration).js`],
-        json: [`${serverPath}/**/*.json`],
-        test: {
-          integration: [`${serverPath}/**/*.integration.js`, 'mocha.global.js'],
-          unit: [`${serverPath}/**/*.spec.js`, 'mocha.global.js']
-        }
+    app: {
+      entrypoint: `${appDir}/app.jsx`,
+      htmlTemplate: `${clientPath}/app.html`,
+      outputPageName: 'app.html'
     },
-    karma: 'karma.conf.js'
+    e2e: ['e2e/**/*.spec.js'],
+    // copied to client directory without processing
+    extras: [
+      `${clientPath}/favicon.ico`,
+      `${clientPath}/robots.txt`,
+      `${clientPath}/.htaccess`
+    ]
+  },
+  server: {
+    linting: `${serverPath}/**/*.js`,
+    scripts: [`${serverPath}/**/!(*.spec|*.integration).js`],
+    json: [`${serverPath}/**/*.json`],
+    test: {
+      integration: [`${serverPath}/**/*.integration.js`, 'mocha.global.js'],
+      unit: [`${serverPath}/**/*.spec.js`, 'mocha.global.js']
+    }
+  },
+  karma: 'karma.conf.js'
 };
 
 /******************************
@@ -96,37 +99,33 @@ function webpackConf(baseConfig, pathsConfig) {
  * Reusable pipelines
  ********************/
 
-let lintServerScripts = lazypipe()
-    .pipe(plugins.jshint, `${serverPath}/.jshintrc`)
-    .pipe(plugins.jshint.reporter, 'jshint-stylish');
-
-let lintServerTestScripts = lazypipe()
-    .pipe(plugins.jshint, `${serverPath}/.jshintrc-spec`)
-    .pipe(plugins.jshint.reporter, 'jshint-stylish');
+let lintScripts = lazypipe()
+  .pipe(plugins.eslint)
+  .pipe(plugins.eslint.format);
 
 let mocha = lazypipe()
-    .pipe(plugins.mocha, {
-        reporter: 'spec',
-        timeout: 5000,
-        require: [
-            './mocha.conf'
-        ]
-    });
+  .pipe(plugins.mocha, {
+    reporter: 'spec',
+    timeout: 5000,
+    require: [
+      './mocha.conf'
+    ]
+  });
 
 let istanbul = lazypipe()
-    .pipe(plugins.istanbul.writeReports)
-    .pipe(plugins.istanbulEnforcer, {
-        thresholds: {
-            global: {
-                lines: 80,
-                statements: 80,
-                branches: 80,
-                functions: 80
-            }
-        },
-        coverageDirectory: './coverage',
-        rootDirectory : ''
-    });
+  .pipe(plugins.istanbul.writeReports)
+  .pipe(plugins.istanbulEnforcer, {
+    thresholds: {
+      global: {
+        lines: 80,
+        statements: 80,
+        branches: 80,
+        functions: 80
+      }
+    },
+    coverageDirectory: './coverage',
+    rootDirectory: ''
+  });
 
 /********************
  * Env
@@ -158,28 +157,24 @@ gulp.task('env:prod', () => {
  * Tasks
  ********************/
 
-gulp.task('lint:scripts:server', () => {
-    return gulp.src(_.union(paths.server.scripts, _.map(paths.server.test, blob => '!' + blob)))
-        .pipe(lintServerScripts());
+gulp.task('lint:client', () => {
+  return gulp.src(paths.client.linting)
+    .pipe(lintScripts());
 });
 
-gulp.task('lint:scripts:serverTest', () => {
-    return gulp.src(paths.server.test)
-        .pipe(lintServerTestScripts());
+gulp.task('lint:server', () => {
+  return gulp.src(paths.server.linting)
+    .pipe(lintScripts());
 });
 
-gulp.task('jscs', () => {
-  return gulp.src(_.union(paths.client.scripts, paths.server.scripts))
-      .pipe(plugins.jscs())
-      .pipe(plugins.jscs.reporter());
-});
+gulp.task('lint', ['lint:client', 'lint:server']);
 
 gulp.task('start:server:prod', () => {
-    nodemon(`-w ${serverOut} ${serverOut}`).on('log', onServerLog);
+  nodemon(`-w ${serverOut} ${serverOut}`).on('log', onServerLog);
 });
 
 gulp.task('start:server', () => {
-    nodemon(`-w ${serverPath} ${serverPath}`).on('log', onServerLog);
+  nodemon(`-w ${serverPath} ${serverPath}`).on('log', onServerLog);
 });
 
 function onServerLog(log) {
@@ -214,49 +209,53 @@ gulp.task('watch', () => {
   const webpackDevApp = webpackConf(wpConf.dev, paths.client.app);
 
   plugins.watch([`${appDir}/**/*`, paths.client.app.htmlTemplate,
-    `!/**/*${intellijTempFileSuffix}`, `${paths.client.sharedJs}/**/*`],{
+    `!/**/*${intellijTempFileSuffix}`, `${paths.client.sharedJs}/**/*`], {
     name: 'AppWatcher'
   }, () => {
     gulp.src(paths.client.app.entrypoint)
       .pipe(plumber())
-      .pipe(webpackStream(webpackDevApp).on('error', function() {this.emit('end')}))
+      .pipe(webpackStream(webpackDevApp).on('error', function () {
+        this.emit('end')
+      }))
       .pipe(gulp.dest(clientOut))
       .pipe(plugins.livereload());
   });
 
   return plugins.watch([`${indexDir}/**/*`, paths.client.index.htmlTemplate,
-    `!/**/*${intellijTempFileSuffix}`, `${paths.client.sharedJs}/**/*`],{
-      name: 'IndexWatcher'
-    }, () => {
+    `!/**/*${intellijTempFileSuffix}`, `${paths.client.sharedJs}/**/*`], {
+    name: 'IndexWatcher'
+  }, () => {
     gulp.src(paths.client.index.entrypoint)
       .pipe(plumber())
-      .pipe(webpackStream(webpackDevIndex).on('error', function() {this.emit('end')}))
+      .pipe(webpackStream(webpackDevIndex).on('error', function () {
+        this.emit('end')
+      }))
       .pipe(gulp.dest(clientOut))
       .pipe(plugins.livereload());
   });
 });
 
 gulp.task('test', cb => {
-    return runSequence('test:server', 'test:client', cb);
+  return runSequence('test:server', 'test:client', cb);
 });
 
 gulp.task('test:server', cb => {
-    runSequence(
-        'env:test',
-        'mocha:unit',
-        'mocha:integration',
-        'mocha:coverage',
-        cb);
+  runSequence(
+    'env:test',
+    'mocha:unit',
+    'mocha:integration',
+    'mocha:coverage',
+    cb);
 });
 
 gulp.task('mocha:unit', () => {
-    return gulp.src(paths.server.test.unit)
-        .pipe(mocha());
+  return gulp.src(paths.server.test.unit)
+    .pipe(mocha());
 });
 
 gulp.task('mocha:integration', () => {
-    return gulp.src(paths.server.test.integration)
-        .pipe(mocha());
+  return gulp.src(paths.server.test.integration)
+    .pipe(mocha());
 });
 
 gulp.task('test:client', (done) => {
@@ -278,16 +277,17 @@ function startKarmaServer(continous, done) {
   };
 
   var runTests = true;
-  if(argv.browsers) {
-    if(typeof argv.browsers === 'string' || argv.browsers instanceof String) {
+  if (argv.browsers) {
+    if (typeof argv.browsers === 'string' || argv.browsers instanceof String) {
       const noWhitespaces = argv.browsers.replace('\\s', '');
       const browsers = noWhitespaces.split(',')
         .map((ab) => {
           const fullBrowserName = SUPPORTED_BROWSERS
             .filter(fn => fn.toLowerCase().startsWith(ab.toLowerCase()))
-            .find((el, idx, arr) => true); /* take any element*/
+            .find((el, idx, arr) => true);
+          /* take any element*/
 
-          if(fullBrowserName == undefined) {
+          if (fullBrowserName == undefined) {
             console.log("Unrecognized browser name prefix: " + ab);
           }
 
@@ -312,7 +312,7 @@ function startKarmaServer(continous, done) {
     }
   }
 
-  if(runTests) new KarmaServer(config, done).start();
+  if (runTests) new KarmaServer(config, done).start();
 }
 
 /********************
@@ -334,7 +334,7 @@ gulp.task('build:prod', cb => {
     'copy:extras',
     'webpack:index:prod',
     'webpack:app:prod',
-    'lint:scripts:server',
+    'lint',
     'transpile:server',
     cb);
 });
@@ -342,8 +342,8 @@ gulp.task('build:prod', cb => {
 gulp.task('clean:out', () => del([`${paths.out}/**`], {dot: true}));
 
 gulp.task('copy:extras', () => {
-    return gulp.src(paths.client.extras, { dot: true })
-        .pipe(gulp.dest(clientOut));
+  return gulp.src(paths.client.extras, {dot: true})
+    .pipe(gulp.dest(clientOut));
 });
 
 function webpackBuilder(baseConfig, pathConfig) {
@@ -381,49 +381,49 @@ gulp.task('transpile:server', () => {
 
 gulp.task('coverage:pre', () => {
   return gulp.src(paths.server.scripts)
-    // Covering files
+  // Covering files
     .pipe(plugins.istanbul({
-        instrumenter: Instrumenter, // Use the isparta instrumenter (code coverage for ES6)
-        includeUntested: true
+      instrumenter: Instrumenter, // Use the isparta instrumenter (code coverage for ES6)
+      includeUntested: true
     }))
     // Force `require` to return covered files
     .pipe(plugins.istanbul.hookRequire());
 });
 
 gulp.task('coverage:unit', () => {
-    return gulp.src(paths.server.test.unit)
-        .pipe(mocha())
-        .pipe(istanbul())
-        // Creating the reports after tests ran
+  return gulp.src(paths.server.test.unit)
+    .pipe(mocha())
+    .pipe(istanbul())
+  // Creating the reports after tests ran
 });
 
 gulp.task('coverage:integration', () => {
-    return gulp.src(paths.server.test.integration)
-        .pipe(mocha())
-        .pipe(istanbul())
-        // Creating the reports after tests ran
+  return gulp.src(paths.server.test.integration)
+    .pipe(mocha())
+    .pipe(istanbul())
+  // Creating the reports after tests ran
 });
 
 gulp.task('mocha:coverage', cb => {
   runSequence('coverage:pre',
-              'env:test',
-              'coverage:unit',
-              'coverage:integration',
-              cb);
+    'env:test',
+    'coverage:unit',
+    'coverage:integration',
+    cb);
 });
 
 // Downloads the selenium webdriver
 gulp.task('webdriver_update', webdriver_update);
 
 gulp.task('test:e2e', ['env:test', 'start:server', 'webdriver_update'], cb => {
-    gulp.src(paths.client.e2e)
-        .pipe(protractor({
-            configFile: 'protractor.conf.js',
-        })).on('error', err => {
-            console.log(err)
-        }).on('end', () => {
-            process.exit();
-        });
+  gulp.src(paths.client.e2e)
+    .pipe(protractor({
+      configFile: 'protractor.conf.js',
+    })).on('error', err => {
+    console.log(err)
+  }).on('end', () => {
+    process.exit();
+  });
 });
 
 gulp.task('debug:webpackConf', cb => {

@@ -16,7 +16,7 @@ describe('Recipe API:', function() {
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
-          if (err) {
+          if(err) {
             return done(err);
           }
           recipes = res.body;
@@ -36,12 +36,12 @@ describe('Recipe API:', function() {
         .post('/api/recipes')
         .send({
           name: 'New Recipe',
-          info: 'This is the brand new recipe!!!'
+          info: 'This is the brand new recipe!!!',
         })
         .expect(201)
         .expect('Content-Type', /json/)
         .end((err, res) => {
-          if (err) {
+          if(err) {
             return done(err);
           }
           newRecipe = res.body;
@@ -65,7 +65,7 @@ describe('Recipe API:', function() {
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
-          if (err) {
+          if(err) {
             return done(err);
           }
           recipe = res.body;
@@ -92,12 +92,12 @@ describe('Recipe API:', function() {
         .put('/api/recipes/' + newRecipe._id)
         .send({
           name: 'Updated Recipe',
-          info: 'This is the updated recipe!!!'
+          info: 'This is the updated recipe!!!',
         })
         .expect(200)
         .expect('Content-Type', /json/)
         .end(function(err, res) {
-          if (err) {
+          if(err) {
             return done(err);
           }
           updatedRecipe = res.body;
@@ -123,7 +123,7 @@ describe('Recipe API:', function() {
         .delete('/api/recipes/' + newRecipe._id)
         .expect(204)
         .end((err, res) => {
-          if (err) {
+          if(err) {
             return done(err);
           }
           done();
@@ -135,7 +135,7 @@ describe('Recipe API:', function() {
         .delete('/api/recipes/' + newRecipe._id)
         .expect(404)
         .end((err, res) => {
-          if (err) {
+          if(err) {
             return done(err);
           }
           done();

@@ -6,8 +6,6 @@ import {ensureCookiesEnabled} from 'SHAREDJS/cookies';
 
 import './app.scss';
 
-ensureCookiesEnabled(app);
-
 function app() {
   if(!auth.isCookiePresent()) {
     window.location.href = '/';
@@ -15,3 +13,5 @@ function app() {
     ReactDOM.render(<HelloWorld />, document.getElementById('content'));
   }
 }
+
+ensureCookiesEnabled(app);

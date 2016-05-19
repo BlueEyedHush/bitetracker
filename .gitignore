@@ -4,3 +4,5 @@ node_modules/
 build/
 npm-debug.log
 coverage
+# weird files which appear after enabling WebStorm ESLint plugin
+*_scsslint_tmp*.*

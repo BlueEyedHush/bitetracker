@@ -16,7 +16,7 @@ describe('Thing API:', function() {
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
-          if (err) {
+          if(err) {
             return done(err);
           }
           things = res.body;
@@ -36,12 +36,12 @@ describe('Thing API:', function() {
         .post('/api/things')
         .send({
           name: 'New Thing',
-          info: 'This is the brand new thing!!!'
+          info: 'This is the brand new thing!!!',
         })
         .expect(201)
         .expect('Content-Type', /json/)
         .end((err, res) => {
-          if (err) {
+          if(err) {
             return done(err);
           }
           newThing = res.body;
@@ -65,7 +65,7 @@ describe('Thing API:', function() {
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
-          if (err) {
+          if(err) {
             return done(err);
           }
           thing = res.body;
@@ -92,12 +92,12 @@ describe('Thing API:', function() {
         .put('/api/things/' + newThing._id)
         .send({
           name: 'Updated Thing',
-          info: 'This is the updated thing!!!'
+          info: 'This is the updated thing!!!',
         })
         .expect(200)
         .expect('Content-Type', /json/)
         .end(function(err, res) {
-          if (err) {
+          if(err) {
             return done(err);
           }
           updatedThing = res.body;
@@ -123,7 +123,7 @@ describe('Thing API:', function() {
         .delete('/api/things/' + newThing._id)
         .expect(204)
         .end((err, res) => {
-          if (err) {
+          if(err) {
             return done(err);
           }
           done();
@@ -135,7 +135,7 @@ describe('Thing API:', function() {
         .delete('/api/things/' + newThing._id)
         .expect(404)
         .end((err, res) => {
-          if (err) {
+          if(err) {
             return done(err);
           }
           done();

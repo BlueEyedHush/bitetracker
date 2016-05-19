@@ -7,7 +7,7 @@ var foodCtrlStub = {
   show: 'foodCtrl.show',
   create: 'foodCtrl.create',
   update: 'foodCtrl.update',
-  destroy: 'foodCtrl.destroy'
+  destroy: 'foodCtrl.destroy',
 };
 
 var routerStub = {
@@ -15,7 +15,7 @@ var routerStub = {
   put: sinon.spy(),
   patch: sinon.spy(),
   post: sinon.spy(),
-  delete: sinon.spy()
+  delete: sinon.spy(),
 };
 
 // require the index with our stubbed out modules
@@ -23,9 +23,9 @@ var foodIndex = proxyquire('./index.js', {
   'express': {
     Router: function() {
       return routerStub;
-    }
+    },
   },
-  './food.controller': foodCtrlStub
+  './food.controller': foodCtrlStub,
 }).default;
 
 describe('Food API Router:', function() {

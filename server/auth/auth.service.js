@@ -7,7 +7,7 @@ import compose from 'composable-middleware';
 import User from '../api/user/user.model';
 
 var validateJwt = expressJwt({
-  secret: config.secrets.session
+  secret: config.secrets.session,
 });
 
 /**
@@ -17,10 +17,10 @@ var validateJwt = expressJwt({
  */
 export function isAuthenticated() {
   return compose()
-    // Validate jwt
+  // Validate jwt
     .use(function(req, res, next) {
       // workaround: copy access token from cookie to header
-      if (req.cookies && req.cookies.hasOwnProperty('access_token')) {
+      if(req.cookies && req.cookies.hasOwnProperty('access_token')) {
         req.headers.authorization = 'Bearer ' + req.cookies.access_token;
       }
       validateJwt(req, res, next);
@@ -29,7 +29,7 @@ export function isAuthenticated() {
     .use(function(req, res, next) {
       User.findByIdAsync(req.user._id)
         .then(user => {
-          if (!user) {
+          if(!user) {
             return res.status(403).end();
           }
           req.user = user;
@@ -43,15 +43,15 @@ export function isAuthenticated() {
  * Checks if the user role meets the minimum requirements of the route
  */
 export function hasRole(roleRequired) {
-  if (!roleRequired) {
+  if(!roleRequired) {
     throw new Error('Required role needs to be set');
   }
 
   return compose()
     .use(isAuthenticated())
     .use(function meetsRequirements(req, res, next) {
-      if (config.userRoles.indexOf(req.user.role) >=
-          config.userRoles.indexOf(roleRequired)) {
+      if(config.userRoles.indexOf(req.user.role) >=
+        config.userRoles.indexOf(roleRequired)) {
         next();
       } else {
         res.status(403).send('Forbidden');
@@ -63,8 +63,8 @@ export function hasRole(roleRequired) {
  * Returns a jwt token signed by the app secret
  */
 export function signToken(id, role) {
-  return jwt.sign({ _id: id, role: role }, config.secrets.session, {
-    expiresIn: 60 * 60 * 5
+  return jwt.sign({_id: id, role: role}, config.secrets.session, {
+    expiresIn: 60 * 60 * 5,
   });
 }
 
@@ -72,7 +72,7 @@ export function signToken(id, role) {
  * Set token cookie directly for oAuth strategies
  */
 export function setTokenCookie(req, res) {
-  if (!req.user) {
+  if(!req.user) {
     return res.status(404).send('It looks like you aren\'t logged in, please try again.');
   }
   var token = signToken(req.user._id, req.user.role);

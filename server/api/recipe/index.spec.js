@@ -7,7 +7,7 @@ var recipeCtrlStub = {
   show: 'recipeCtrl.show',
   create: 'recipeCtrl.create',
   update: 'recipeCtrl.update',
-  destroy: 'recipeCtrl.destroy'
+  destroy: 'recipeCtrl.destroy',
 };
 
 var authServiceStub = {
@@ -16,7 +16,7 @@ var authServiceStub = {
   },
   hasRole(role) {
     return 'authService.hasRole.' + role;
-  }
+  },
 };
 
 var routerStub = {
@@ -24,7 +24,7 @@ var routerStub = {
   put: sinon.spy(),
   patch: sinon.spy(),
   post: sinon.spy(),
-  delete: sinon.spy()
+  delete: sinon.spy(),
 };
 
 // require the index with our stubbed out modules
@@ -32,10 +32,10 @@ var recipeIndex = proxyquire('./index.js', {
   'express': {
     Router: function() {
       return routerStub;
-    }
+    },
   },
   './recipe.controller': recipeCtrlStub,
-  '../../auth/auth.service': authServiceStub
+  '../../auth/auth.service': authServiceStub,
 }).default;
 
 describe('Recipe API Router:', function() {

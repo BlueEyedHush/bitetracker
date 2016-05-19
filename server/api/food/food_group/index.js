@@ -3,7 +3,7 @@
 var express = require('express');
 var controller = require('./food_group.controller');
 
-var router = express.Router();
+const router = express.Router();
 
 router.get('/', controller.index);
 

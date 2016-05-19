@@ -13,7 +13,7 @@ describe('User API:', function() {
       user = new User({
         name: 'Fake User',
         email: 'test@example.com',
-        password: 'password'
+        password: 'password',
       });
 
       return user.saveAsync();
@@ -33,7 +33,7 @@ describe('User API:', function() {
         .post('/auth/local')
         .send({
           email: 'test@example.com',
-          password: 'password'
+          password: 'password',
         })
         .expect(200)
         .expect('Content-Type', /json/)

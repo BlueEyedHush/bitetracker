@@ -5,7 +5,7 @@
 module.exports = {
   // MongoDB connection options
   mongo: {
-    uri: 'mongodb://localhost/fooddiary-test'
+    uri: 'mongodb://localhost/fooddiary-test',
   },
   sequelize: {
     uri: 'sqlite://',
@@ -13,8 +13,8 @@ module.exports = {
       logging: false,
       storage: 'test.sqlite',
       define: {
-        timestamps: false
-      }
-    }
-  }
+        timestamps: false,
+      },
+    },
+  },
 };

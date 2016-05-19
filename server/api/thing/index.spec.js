@@ -7,7 +7,7 @@ var thingCtrlStub = {
   show: 'thingCtrl.show',
   create: 'thingCtrl.create',
   update: 'thingCtrl.update',
-  destroy: 'thingCtrl.destroy'
+  destroy: 'thingCtrl.destroy',
 };
 
 var routerStub = {
@@ -15,7 +15,7 @@ var routerStub = {
   put: sinon.spy(),
   patch: sinon.spy(),
   post: sinon.spy(),
-  delete: sinon.spy()
+  delete: sinon.spy(),
 };
 
 // require the index with our stubbed out modules
@@ -23,9 +23,9 @@ var thingIndex = proxyquire('./index.js', {
   'express': {
     Router: function() {
       return routerStub;
-    }
+    },
   },
-  './thing.controller': thingCtrlStub
+  './thing.controller': thingCtrlStub,
 }).default;
 
 describe('Thing API Router:', function() {

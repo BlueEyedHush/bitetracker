@@ -1,4 +1,3 @@
-
 const path = require('path');
 const _ = require('lodash');
 const webpack = require('webpack');
@@ -15,34 +14,34 @@ function base() {
       loaders: [{
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        loader: 'babel-loader'
-      },{
+        loader: 'babel-loader',
+      }, {
         test: /\.scss$/,
-        loaders: ["style", "css", "postcss", "resolve-url", "sass?sourceMap"]
-      },{
+        loaders: ['style', 'css', 'postcss', 'resolve-url', 'sass?sourceMap'],
+      }, {
         test: /\.css$/,
-        loaders: ["style", "css", "postcss"]
-      },{
+        loaders: ['style', 'css', 'postcss'],
+      }, {
         test: /\.png$/,
-        loader: "file-loader"
+        loader: 'file-loader',
       },
-        { test: /\.woff$/,   loader: "url-loader?limit=10000&minetype=font/woff" },
-        { test: /\.woff2$/,   loader: "url-loader?limit=10000&minetype=font/woff2" },
-        { test: /\.ttf$/,    loader: "file-loader" },
-        { test: /\.eot$/,    loader: "file-loader" },
-        { test: /\.svg$/,    loader: "file-loader" }
-      ]
+        {test: /\.woff$/, loader: 'url-loader?limit=10000&minetype=font/woff'},
+        {test: /\.woff2$/, loader: 'url-loader?limit=10000&minetype=font/woff2'},
+        {test: /\.ttf$/, loader: 'file-loader'},
+        {test: /\.eot$/, loader: 'file-loader'},
+        {test: /\.svg$/, loader: 'file-loader'},
+      ],
     },
     plugins: [],
     externals: {},
     resolve: {
       alias: {
-        SHAREDJS: getClientPath() + '/sharedjs'
-      }
+        SHAREDJS: getClientPath() + '/sharedjs',
+      },
     },
-    postcss: function () {
+    postcss: function() {
       return [autoprefixer];
-    }
+    },
   };
 }
 
@@ -82,19 +81,20 @@ function karmaClientModuleAlias(wc) {
 
 function babelRewirePlugin(wc) {
   wc.module.loaders[0].query = {
-    "presets": [ "es2015", "react" ],
-    "plugins": ["rewire"]
-  }
-  
+    presets: ['es2015', 'react'],
+    plugins: ['rewire'],
+  };
+
   return wc;
 }
 
 const dev = _.flow(base, sourceMaps);
 const prod = _.flow(base, uglify);
-const karma =_.flow(base, inlineSourceMaps, jsonLoader, reactKarmaExternals, karmaClientModuleAlias, babelRewirePlugin);
+const karma = _.flow(base, inlineSourceMaps, jsonLoader, reactKarmaExternals,
+  karmaClientModuleAlias, babelRewirePlugin);
 
 module.exports = {
   dev: dev,
   prod: prod,
-  karma: karma
+  karma: karma,
 };

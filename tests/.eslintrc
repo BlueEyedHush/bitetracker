@@ -1,0 +1,16 @@
+{
+  "extends": "../.eslintrc",
+  "env": {
+    "browser": true,
+    "node": false,
+    "mocha": true
+  },
+  "globals": {
+    "chai": true,
+    "expect": true, /* for chai */
+    "sinon": true
+  },
+  "rules": {
+    "no-unused-expressions": "off" /* for chai's to.be.true */
+  }
+}
