@@ -27,14 +27,16 @@ const argv = yargs
   .alias('b', 'browsers')
   .argv;
 
-var plugins = gulpLoadPlugins();
+var plugins = gulpLoadPlugins({
+  camelize: true,
+});
 
 const out = 'build';
 const srcDir = 'src/node_modules';
 const clientPath = `${srcDir}/client`;
 const serverPath = `${srcDir}/server`;
-const clientTestPath = `${srcDir}tests/client`;
-const serverTestPath = `${srcDir}tests/server`;
+const clientTestPath = `${srcDir}/tests/client`;
+const serverTestPath = `${srcDir}/tests/server`;
 const clientOut = `${out}/client`;
 const serverOut = `${out}/server`;
 const indexDir = `${clientPath}/index`;
@@ -43,9 +45,11 @@ const appDir = `${clientPath}/app`;
 const paths = {
   client: {
     // what will be linted
-    linting: [
+    scripts: [
       `${clientPath}/**/*.js`,
       `${clientPath}/**/*.jsx`,
+    ],
+    test: [
       `${clientTestPath}/**/*.js`,
       `${clientTestPath}/**/*.jsx`,
     ],
@@ -69,12 +73,13 @@ const paths = {
     ]
   },
   server: {
-    linting: `${serverPath}/**/*.js`,
-    scripts: [`${serverPath}/**/!(*.spec|*.integration).js`, `${serverTestPath}/mocha.finalizer`],
+    scripts: [`${serverPath}/**/*.js`],
     json: [`${serverPath}/**/*.json`],
     test: {
-      integration: [`${serverPath}/**/*.integration.js`, `${serverTestPath}/mocha.finalizer`],
-      unit: [`${serverPath}/**/*.spec.js`]
+      initializer: `${serverTestPath}/mocha.initializer.js`,
+      integration: `${serverTestPath}/integration/**/*.integration.js`,
+      unit: `${serverTestPath}/unit/**/*.spec.js`,
+      finalizer: `${serverTestPath}/mocha.finalizer.js`,
     }
   },
   karma: 'karma.conf.js'
@@ -105,14 +110,20 @@ let lintScripts = lazypipe()
   .pipe(plugins.eslint)
   .pipe(plugins.eslint.format);
 
-let mocha = lazypipe()
-  .pipe(plugins.mocha, {
+function mocha(port) {
+  port = port || 9001;
+
+  return lazypipe().pipe(plugins.spawnMocha, {
+    env: {
+      PORT: port,
+    },
     reporter: 'spec',
     timeout: 5000,
     require: [
-      './mocha.conf'
+      paths.server.test.initializer
     ]
   });
+}
 
 let istanbul = lazypipe()
   .pipe(plugins.istanbul.writeReports)
@@ -160,16 +171,26 @@ gulp.task('env:prod', () => {
  ********************/
 
 gulp.task('lint:client', () => {
-  return gulp.src(paths.client.linting)
+  return gulp.src(paths.client.scripts)
+    .pipe(lintScripts());
+});
+
+gulp.task('lint:clienttests', () => {
+  return gulp.src(paths.client.test)
     .pipe(lintScripts());
 });
 
 gulp.task('lint:server', () => {
-  return gulp.src(paths.server.linting)
+  return gulp.src(paths.server.scripts)
     .pipe(lintScripts());
 });
 
-gulp.task('lint', ['lint:client', 'lint:server']);
+gulp.task('lint:servertests', () => {
+  return gulp.src([paths.server.test.unit, paths.server.test.integration, paths.server.test.finalizer])
+    .pipe(lintScripts());
+});
+
+gulp.task('lint', ['lint:client', 'lint:clienttests', 'lint:server', 'lint:servertests']);
 
 gulp.task('start:server:prod', () => {
   nodemon(`-w ${serverOut} ${serverOut}`).on('log', onServerLog);
@@ -241,23 +262,16 @@ gulp.task('test', cb => {
   return runSequence('test:server', 'test:client', cb);
 });
 
-gulp.task('test:server', cb => {
-  runSequence(
-    'env:test',
-    'mocha:unit',
-    'mocha:integration',
-    'mocha:coverage',
-    cb);
-});
+gulp.task('test:server', ['mocha:unit', 'mocha:integration']);
 
-gulp.task('mocha:unit', () => {
+gulp.task('mocha:unit', ['env:test'], () => {
   return gulp.src(paths.server.test.unit)
-    .pipe(mocha());
+    .pipe(mocha(9001)());
 });
 
-gulp.task('mocha:integration', () => {
-  return gulp.src(paths.server.test.integration)
-    .pipe(mocha());
+gulp.task('mocha:integration', ['env:test'], () => {
+  return gulp.src([paths.server.test.integration, paths.server.test.finalizer], {base: serverTestPath})
+    .pipe(mocha(9002)());
 });
 
 gulp.task('test:client', (done) => {
@@ -340,6 +354,8 @@ gulp.task('build:prod', cb => {
 
 gulp.task('clean:out', () => del([`${out}/**/*`], {dot: true}));
 
+gulp.task('clean:lintrubbish', () => del([`./**/*_scsslint_tmp*`], {dot: true}));
+
 gulp.task('copy:extras', () => {
   return gulp.src(paths.client.extras, {dot: true})
     .pipe(gulp.dest(clientOut));
@@ -391,14 +407,14 @@ gulp.task('coverage:pre', () => {
 
 gulp.task('coverage:unit', () => {
   return gulp.src(paths.server.test.unit)
-    .pipe(mocha())
+    .pipe(mocha()())
     .pipe(istanbul())
   // Creating the reports after tests ran
 });
 
 gulp.task('coverage:integration', () => {
   return gulp.src(paths.server.test.integration)
-    .pipe(mocha())
+    .pipe(mocha()())
     .pipe(istanbul())
   // Creating the reports after tests ran
 });
