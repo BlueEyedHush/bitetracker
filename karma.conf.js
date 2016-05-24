@@ -62,16 +62,16 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'tests/client/**/*.jsx',
-      'tests/client/**/*.js'
+      'src/node_modules/tests/client/**/*.jsx',
+      'src/node_modules/tests/client/**/*.js'
     ],
 
     // list of files / patterns to exclude
     exclude: [],
 
     preprocessors: {
-      'tests/client/**/*.jsx': ['webpack', 'sourcemap'],
-      'tests/client/**/*.js': ['webpack', 'sourcemap']
+      'src/node_modules/tests/client/**/*.jsx': ['webpack', 'sourcemap'],
+      'src/node_modules/tests/client/**/*.js': ['webpack', 'sourcemap']
     },
 
     // web server port

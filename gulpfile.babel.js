@@ -21,7 +21,7 @@ import plumber from 'gulp-plumber';
 import yargs from 'yargs';
 import * as wpConf from './webpack.dconf';
 
-import debug from 'gulp-debug'
+import debug from 'gulp-debug';
 
 const argv = yargs
   .alias('b', 'browsers')
@@ -30,9 +30,11 @@ const argv = yargs
 var plugins = gulpLoadPlugins();
 
 const out = 'build';
-const clientPath = 'client';
-const serverPath = 'server';
-const clientTestPath = 'tests/client';
+const srcDir = 'src/node_modules';
+const clientPath = `${srcDir}/client`;
+const serverPath = `${srcDir}/server`;
+const clientTestPath = `${srcDir}tests/client`;
+const serverTestPath = `${srcDir}tests/server`;
 const clientOut = `${out}/client`;
 const serverOut = `${out}/server`;
 const indexDir = `${clientPath}/index`;
@@ -68,11 +70,11 @@ const paths = {
   },
   server: {
     linting: `${serverPath}/**/*.js`,
-    scripts: [`${serverPath}/**/!(*.spec|*.integration).js`],
+    scripts: [`${serverPath}/**/!(*.spec|*.integration).js`, `${serverTestPath}/mocha.finalizer`],
     json: [`${serverPath}/**/*.json`],
     test: {
-      integration: [`${serverPath}/**/*.integration.js`, 'mocha.global.js'],
-      unit: [`${serverPath}/**/*.spec.js`, 'mocha.global.js']
+      integration: [`${serverPath}/**/*.integration.js`, `${serverTestPath}/mocha.finalizer`],
+      unit: [`${serverPath}/**/*.spec.js`]
     }
   },
   karma: 'karma.conf.js'
@@ -269,8 +271,6 @@ gulp.task('test:client:cont', (done) => {
 const SUPPORTED_BROWSERS = ['IE', 'Firefox', 'Chrome', 'Opera', 'Safari', 'PhantomJS'];
 
 function startKarmaServer(continous, done) {
-  process.env.CLIENT_PATH = path.resolve(clientPath);
-
   var config = {
     configFile: `${__dirname}/${paths.karma}`,
     singleRun: !continous
@@ -334,12 +334,11 @@ gulp.task('build:prod', cb => {
     'copy:extras',
     'webpack:index:prod',
     'webpack:app:prod',
-    'lint',
     'transpile:server',
     cb);
 });
 
-gulp.task('clean:out', () => del([`${paths.out}/**`], {dot: true}));
+gulp.task('clean:out', () => del([`${out}/**/*`], {dot: true}));
 
 gulp.task('copy:extras', () => {
   return gulp.src(paths.client.extras, {dot: true})

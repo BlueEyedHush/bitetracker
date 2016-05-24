@@ -3,17 +3,11 @@ const _ = require('lodash');
 const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 
-function getClientPath() {
-  const rel = process.env.CLIENT_PATH || './client';
-  return path.resolve(rel);
-}
-
 function base() {
   return {
     module: {
       loaders: [{
         test: /\.jsx?$/,
-        exclude: /node_modules/,
         loader: 'babel-loader',
       }, {
         test: /\.scss$/,
@@ -34,11 +28,6 @@ function base() {
     },
     plugins: [],
     externals: {},
-    resolve: {
-      alias: {
-        SHAREDJS: getClientPath() + '/sharedjs',
-      },
-    },
     postcss: function() {
       return [autoprefixer];
     },
@@ -73,15 +62,9 @@ function reactKarmaExternals(wc) {
   return wc;
 }
 
-/* so that we can use CLIENT_PATH in frontend test instead of specifying directory directly */
-function karmaClientModuleAlias(wc) {
-  wc.resolve.alias.CLIENT_PATH = getClientPath();
-  return wc;
-}
-
 function babelRewirePlugin(wc) {
   wc.module.loaders[0].query = {
-    presets: ['es2015', 'react'],
+    /* this will be merged with appropriate .babelrc file (and .babelrc has priority) */
     plugins: ['rewire'],
   };
 
@@ -90,8 +73,7 @@ function babelRewirePlugin(wc) {
 
 const dev = _.flow(base, sourceMaps);
 const prod = _.flow(base, uglify);
-const karma = _.flow(base, inlineSourceMaps, jsonLoader, reactKarmaExternals,
-  karmaClientModuleAlias, babelRewirePlugin);
+const karma = _.flow(base, inlineSourceMaps, jsonLoader, reactKarmaExternals, babelRewirePlugin);
 
 module.exports = {
   dev: dev,
