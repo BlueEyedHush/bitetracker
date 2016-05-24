@@ -353,7 +353,7 @@ gulp.task('build:prod', cb => {
 
 gulp.task('clean:out', () => del([`${out}/**/*`], {dot: true}));
 
-gulp.task('clean:lintrubbish', () => del([`./**/*_scsslint_tmp*`], {dot: true}));
+gulp.task('clean:lintrubbish', () => del(['./**/*_scsslint_tmp*', '!./node_modules/**/*'], {dot: true}));
 
 gulp.task('copy:extras', () => {
   return gulp.src(paths.client.extras, {dot: true})
