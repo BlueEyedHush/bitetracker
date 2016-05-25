@@ -1,27 +1,26 @@
 'use strict';
 
-import path from 'path';
-import _ from 'lodash';
-import del from 'del';
-import gulp from 'gulp';
-import gulpLoadPlugins from 'gulp-load-plugins';
-import http from 'http';
-import open from 'open';
-import lazypipe from 'lazypipe';
-import {stream as wiredep} from 'wiredep';
-import nodemon from 'nodemon';
-import {Server as KarmaServer} from 'karma';
-import runSequence from 'run-sequence';
-import {protractor, webdriver_update} from 'gulp-protractor';
-import {Instrumenter} from 'isparta';
-import webpack from 'webpack';
-import webpackStream from 'webpack-stream';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import plumber from 'gulp-plumber';
-import yargs from 'yargs';
-import * as wpConf from './webpack.dconf';
+const path = require('path');
+const _ = require('lodash');
+const del = require('del');
 
-import debug from 'gulp-debug';
+const gulp = require('gulp');
+const gulpLoadPlugins = require('gulp-load-plugins');
+const lazypipe = require('lazypipe');
+const runSequence = require('run-sequence');
+const plumber = require('gulp-plumber');
+const yargs = require('yargs');
+
+const webpackStream = require('webpack-stream');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const wpConf = require('./webpack.dconf');
+
+const nodemon = require('nodemon');
+const KarmaServer = require('karma').Server;
+const Protractor = require('gulp-protractor');
+const protractor = Protractor.protractor;
+const webdriver_update = Protractor.webdriver_update;
+const Instrumenter = require('isparta').Instrumenter;
 
 const argv = yargs
   .alias('b', 'browsers')
@@ -407,15 +406,15 @@ gulp.task('coverage:pre', () => {
 
 gulp.task('coverage:unit', () => {
   return gulp.src(paths.server.test.unit)
-    .pipe(mocha()())
-    .pipe(istanbul())
+    .pipe(mocha())
+    .pipe(istanbul());
   // Creating the reports after tests ran
 });
 
 gulp.task('coverage:integration', () => {
   return gulp.src(paths.server.test.integration)
-    .pipe(mocha()())
-    .pipe(istanbul())
+    .pipe(mocha())
+    .pipe(istanbul());
   // Creating the reports after tests ran
 });
 
