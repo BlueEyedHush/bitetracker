@@ -55,12 +55,12 @@ const paths = {
     sharedJs: `${clientPath}/sharedjs`,
     index: {
       entrypoint: `${indexDir}/index.jsx`,
-      htmlTemplate: `${clientPath}/index.html`,
+      htmlTemplate: `${clientPath}/template.html`,
       outputPageName: 'index.html'
     },
     app: {
       entrypoint: `${appDir}/app.jsx`,
-      htmlTemplate: `${clientPath}/app.html`,
+      htmlTemplate: `${clientPath}/template.html`,
       outputPageName: 'app.html'
     },
     e2e: ['e2e/**/*.spec.js'],
