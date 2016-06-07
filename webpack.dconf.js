@@ -28,9 +28,12 @@ function base() {
     },
     plugins: [],
     externals: {},
-    postcss: function() {
+    postcss: function () {
       return [autoprefixer];
     },
+    resolve: {
+      extensions: ['', '.js', '.jsx', '.json']
+    }
   };
 }
 
