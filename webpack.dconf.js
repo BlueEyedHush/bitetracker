@@ -8,23 +8,23 @@ function base() {
     module: {
       loaders: [{
         test: /\.jsx?$/,
-        loader: 'babel-loader',
+        loader: 'babel'
       }, {
         test: /\.scss$/,
-        loaders: ['style', 'css', 'postcss', 'resolve-url', 'sass?sourceMap'],
+        loaders: ['style', 'css', 'postcss', 'resolve-url', 'sass?sourceMap']
       }, {
         test: /\.css$/,
-        loaders: ['style', 'css', 'postcss'],
+        loaders: ['style', 'css', 'postcss']
       }, {
         test: /\.png$/,
-        loader: 'file-loader',
+        loader: 'file'
       },
-        {test: /\.woff$/, loader: 'url-loader?limit=10000&minetype=font/woff'},
-        {test: /\.woff2$/, loader: 'url-loader?limit=10000&minetype=font/woff2'},
-        {test: /\.ttf$/, loader: 'file-loader'},
-        {test: /\.eot$/, loader: 'file-loader'},
-        {test: /\.svg$/, loader: 'file-loader'},
-      ],
+        {test: /\.woff$/, loader: 'url?limit=10000&minetype=font/woff'},
+        {test: /\.woff2$/, loader: 'url?limit=10000&minetype=font/woff2'},
+        {test: /\.ttf$/, loader: 'file'},
+        {test: /\.eot$/, loader: 'file'},
+        {test: /\.svg$/, loader: 'file'}
+      ]
     },
     plugins: [],
     externals: {},
@@ -68,7 +68,7 @@ function reactKarmaExternals(wc) {
 function babelRewirePlugin(wc) {
   wc.module.loaders[0].query = {
     /* this will be merged with appropriate .babelrc file (and .babelrc has priority) */
-    plugins: ['rewire'],
+    plugins: ['rewire']
   };
 
   return wc;
@@ -81,5 +81,5 @@ const karma = _.flow(base, inlineSourceMaps, jsonLoader, reactKarmaExternals, ba
 module.exports = {
   dev: dev,
   prod: prod,
-  karma: karma,
+  karma: karma
 };
