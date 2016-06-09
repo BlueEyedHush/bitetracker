@@ -8,7 +8,8 @@ function base() {
     module: {
       loaders: [{
         test: /\.jsx?$/,
-        loader: 'babel'
+        loader: 'babel',
+        include: /src\/node_modules/
       }, {
         test: /\.scss$/,
         loaders: ['style', 'css', 'postcss', 'resolve-url', 'sass?sourceMap']
