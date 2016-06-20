@@ -40,7 +40,7 @@ function base() {
         'actions':      'client/app/actions',
         'stores':       'client/app/stores',
         'sources':      'client/app/sources',
-        'mixins':       'client/app/mixins'
+        'util':         'client/app/util'
       }
     }
   };

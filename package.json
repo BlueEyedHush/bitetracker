@@ -17,6 +17,7 @@
     "express-jwt": "^3.0.0",
     "express-session": "^1.11.3",
     "history": "^2.1.2",
+    "immutable": "^3.8.1",
     "jade": "^1.11.0",
     "js-cookie": "^2.1.1",
     "jsonwebtoken": "^5.0.0",
