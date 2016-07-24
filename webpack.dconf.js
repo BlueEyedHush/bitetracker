@@ -40,6 +40,7 @@ function base() {
         'actions':      'client/app/actions',
         'stores':       'client/app/stores',
         'sources':      'client/app/sources',
+        'schemas':      'client/app/schemas',
         'mixins':       'client/app/mixins'
       }
     }
