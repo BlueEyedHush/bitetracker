@@ -1,9 +1,14 @@
 node_modules/
 !src/node_modules/
+
 .sass-cache
 .idea/
 build/
 npm-debug.log
 coverage
+logs/
+
 # weird files which appear after enabling WebStorm ESLint plugin
 *_scsslint_tmp*.*
+# for experiments!
+tmp.js
