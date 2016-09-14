@@ -75,10 +75,11 @@ const paths = {
     scripts: [`${serverPath}/**/*.js`],
     json: [`${serverPath}/**/*.json`],
     test: {
-      initializer: `${serverTestPath}/mocha.initializer.js`,
+      envSetup: `${serverTestPath}/mocha.env.setup.js`,
+      integrationInitializer: `${serverTestPath}/integration/initializer.js`,
       integration: `${serverTestPath}/integration/**/*.integration.js`,
       unit: `${serverTestPath}/unit/**/*.spec.js`,
-      finalizer: `${serverTestPath}/mocha.finalizer.js`,
+      integrationFinisher: `${serverTestPath}/integration/finisher.js`,
     }
   },
   karma: 'karma.conf.js'
@@ -119,7 +120,7 @@ function mocha(port) {
     reporter: 'spec',
     timeout: 5000,
     require: [
-      paths.server.test.initializer
+      paths.server.test.envSetup
     ]
   });
 }
@@ -269,7 +270,8 @@ gulp.task('mocha:unit', ['env:test'], () => {
 });
 
 gulp.task('mocha:integration', ['env:test'], () => {
-  return gulp.src([paths.server.test.integration, paths.server.test.finalizer], {base: serverTestPath})
+  return gulp.src([paths.server.test.integrationInitializer, paths.server.test.integration,
+    paths.server.test.integrationFinisher], {base: serverTestPath})
     .pipe(mocha(9002)());
 });
 
