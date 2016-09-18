@@ -8,5 +8,5 @@ matrix:
 before_script:
   - gem install sass
   - npm install -g gulp
-script: gulp test
+script: gulp test -b Phantom
 services: mongodb
