@@ -9,7 +9,7 @@ function base() {
       loaders: [{
         test: /\.jsx?$/,
         loader: 'babel',
-        include: [/src\/node_modules/, /node_modules\/mixwith/]
+        include: [/src\/node_modules/]
       }, {
         test: /\.scss$/,
         loaders: ['style', 'css', 'postcss', 'resolve-url', 'sass?sourceMap']
