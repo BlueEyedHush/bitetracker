@@ -142,8 +142,9 @@
     "npm": "^2.14.7"
   },
   "scripts": {
-    "start": "node server",
+    "start": "gulp start:dist",
     "test": "gulp test",
+    "postinstall": "gulp build:prod",
     "update-webdriver": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update"
   },
   "private": true
