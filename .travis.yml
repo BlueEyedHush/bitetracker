@@ -7,4 +7,6 @@ matrix:
     - node_js: 5.1.1
 before_script:
   - gem install sass
+  - npm install -g gulp
+script: gulp test -b Phantom
 services: mongodb
