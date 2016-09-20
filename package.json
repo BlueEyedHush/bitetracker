@@ -80,7 +80,7 @@
     "gulp-istanbul-enforcer": "^1.0.3",
     "gulp-jade": "^1.0.1",
     "gulp-livereload": "^3.8.0",
-    "gulp-load-plugins": "^1.0.0-rc.1",
+    "gulp-load-plugins": "^1.3.0",
     "gulp-plumber": "^1.1.0",
     "gulp-protractor": "^2.1.0",
     "gulp-sourcemaps": "^1.5.2",
@@ -139,12 +139,12 @@
   },
   "engines": {
     "node": "^4.2.3",
-    "npm": "^2.14.7"
+    "npm": "^3.8.3"
   },
   "scripts": {
     "start": "gulp start:dist",
     "test": "gulp test",
-    "postinstall": "gulp build:prod",
+    "postinstall": "gulp build:dist",
     "update-webdriver": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update"
   },
   "private": true
