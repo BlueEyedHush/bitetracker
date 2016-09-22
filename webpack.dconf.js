@@ -8,7 +8,8 @@ function base() {
     module: {
       loaders: [{
         test: /\.jsx?$/,
-        loader: 'babel'
+        loader: 'babel',
+        include: [/src\/node_modules/]
       }, {
         test: /\.scss$/,
         loaders: ['style', 'css', 'postcss', 'resolve-url', 'sass?sourceMap']
@@ -32,7 +33,16 @@ function base() {
       return [autoprefixer];
     },
     resolve: {
-      extensions: ['', '.js', '.jsx', '.json']
+      extensions: ['', '.js', '.jsx', '.json'],
+      alias: {
+        'alt-instance': 'client/app/alt',
+        'components':   'client/app/components',
+        'actions':      'client/app/actions',
+        'stores':       'client/app/stores',
+        'sources':      'client/app/sources',
+        'schemas':      'client/app/schemas',
+        'mixins':       'client/app/mixins'
+      }
     }
   };
 }

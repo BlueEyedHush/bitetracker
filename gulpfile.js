@@ -55,12 +55,12 @@ const paths = {
     sharedJs: `${clientPath}/sharedjs`,
     index: {
       entrypoint: `${indexDir}/index.jsx`,
-      htmlTemplate: `${clientPath}/index.html`,
+      htmlTemplate: `${clientPath}/template.html`,
       outputPageName: 'index.html'
     },
     app: {
       entrypoint: `${appDir}/app.jsx`,
-      htmlTemplate: `${clientPath}/app.html`,
+      htmlTemplate: `${clientPath}/template.html`,
       outputPageName: 'app.html'
     },
     e2e: ['e2e/**/*.spec.js'],
@@ -207,11 +207,24 @@ function onServerLog(log) {
     log.message);
 }
 
+gulp.task('start', cb => {
+  runSequence(
+    'env',
+    'start:server',
+    cb);
+});
+
+gulp.task('start:dist', cb => {
+  runSequence(
+    'env:prod',
+    'start:server:prod',
+    cb);
+});
+
 gulp.task('serve', cb => {
   runSequence(
     'build',
-    'env',
-    'start:server',
+    'start',
     'watch',
     cb);
 });
@@ -219,8 +232,7 @@ gulp.task('serve', cb => {
 gulp.task('serve:dist', cb => {
   runSequence(
     'build:prod',
-    'env:prod',
-    'start:server:prod',
+    'start:dist',
     cb);
 });
 
