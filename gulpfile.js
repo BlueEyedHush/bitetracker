@@ -110,15 +110,16 @@ let lintScripts = lazypipe()
   .pipe(plugins.eslint)
   .pipe(plugins.eslint.format);
 
-function mocha(port) {
+function mocha(port, delayedMode) {
   port = port || 9001;
 
   return lazypipe().pipe(plugins.spawnMocha, {
     env: {
       PORT: port,
     },
-    reporter: 'spec',
+    reporter: 'mocha-better-spec-reporter',
     timeout: 5000,
+    delay: delayedMode,
     require: [
       paths.server.test.envSetup
     ]
@@ -274,17 +275,19 @@ gulp.task('test', cb => {
   return runSequence('test:server', 'test:client', cb);
 });
 
-gulp.task('test:server', ['mocha:unit', 'mocha:integration']);
+gulp.task('test:server', cb => {
+  return runSequence('mocha:unit', 'mocha:integration', cb);
+});
 
 gulp.task('mocha:unit', ['env:test'], () => {
   return gulp.src(paths.server.test.unit)
-    .pipe(mocha(9001)());
+    .pipe(mocha(9001, false)());
 });
 
 gulp.task('mocha:integration', ['env:test'], () => {
   return gulp.src([paths.server.test.integrationInitializer, paths.server.test.integration,
     paths.server.test.integrationFinisher], {base: serverTestPath})
-    .pipe(mocha(9002)());
+    .pipe(mocha(9002, true)());
 });
 
 gulp.task('test:client', (done) => {
