@@ -2,6 +2,7 @@ const path = require('path');
 const _ = require('lodash');
 const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
+var OfflinePlugin = require('offline-plugin');
 
 function base() {
   return {
@@ -20,14 +21,24 @@ function base() {
         test: /\.png$/,
         loader: 'file'
       },
-        {test: /\.woff$/, loader: 'url?limit=10000&minetype=font/woff'},
-        {test: /\.woff2$/, loader: 'url?limit=10000&minetype=font/woff2'},
-        {test: /\.ttf$/, loader: 'file'},
-        {test: /\.eot$/, loader: 'file'},
-        {test: /\.svg$/, loader: 'file'}
+        { test: /\.woff$/, loader: 'url?limit=10000&minetype=font/woff' },
+        { test: /\.woff2$/, loader: 'url?limit=10000&minetype=font/woff2' },
+        { test: /\.ttf$/, loader: 'file' },
+        { test: /\.eot$/, loader: 'file' },
+        { test: /\.svg$/, loader: 'file' }
       ]
     },
-    plugins: [],
+    plugins: [
+      new webpack.DefinePlugin({
+        PRODUCTION: process.env.NODE_ENV === 'production'
+      }),
+      // Offline plugin should be the last plugin on the list
+      new OfflinePlugin({
+        ServiceWorker: {
+          events: true
+        }
+      })
+    ],
     externals: {},
     postcss: function () {
       return [autoprefixer];
@@ -63,7 +74,7 @@ function uglify(wc) {
 }
 
 function jsonLoader(wc) {
-  wc.module.loaders.push({test: /\.json$/, loader: 'json'});
+  wc.module.loaders.push({ test: /\.json$/, loader: 'json' });
   return wc;
 }
 
