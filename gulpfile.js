@@ -5,7 +5,6 @@ const _ = require('lodash');
 const del = require('del');
 
 const gulp = require('gulp');
-const gulpLoadPlugins = require('gulp-load-plugins');
 const lazypipe = require('lazypipe');
 const runSequence = require('run-sequence');
 const plumber = require('gulp-plumber');
@@ -26,11 +25,11 @@ const argv = yargs
   .alias('b', 'browsers')
   .argv;
 
-var plugins = gulpLoadPlugins({
+var plugins = require('gulp-load-plugins')({
   camelize: true,
 });
 
-const out = 'build';
+const out = 'build/node_modules';
 const srcDir = 'src/node_modules';
 const clientPath = `${srcDir}/client`;
 const serverPath = `${srcDir}/server`;
@@ -159,7 +158,7 @@ gulp.task('env:test', () => {
   process.env.NODE_ENV = 'test';
 });
 
-gulp.task('env:prod', () => {
+gulp.task('env:dist', () => {
   commonConfig();
   process.env.SERVER_ROOT = serverOut;
   process.env.NODE_ENV = 'production';
@@ -191,14 +190,6 @@ gulp.task('lint:servertests', () => {
 
 gulp.task('lint', ['lint:client', 'lint:clienttests', 'lint:server', 'lint:servertests']);
 
-gulp.task('start:server:prod', () => {
-  nodemon(`-w ${serverOut} ${serverOut}`).on('log', onServerLog);
-});
-
-gulp.task('start:server', () => {
-  nodemon(`-w ${serverPath} ${serverPath}`).on('log', onServerLog);
-});
-
 function onServerLog(log) {
   console.log(plugins.util.colors.white('[') +
     plugins.util.colors.yellow('nodemon') +
@@ -206,20 +197,40 @@ function onServerLog(log) {
     log.message);
 }
 
+gulp.task('start:server:dist', () => {
+  nodemon({script: serverOut, watch: false}).on('log', onServerLog);
+});
+
+gulp.task('start:server', () => {
+  nodemon({script: serverPath, watch: serverPath}).on('log', onServerLog);
+});
+
+gulp.task('start', cb => {
+  runSequence(
+    'env',
+    'start:server',
+    cb);
+});
+
+gulp.task('start:dist', cb => {
+  runSequence(
+    'env:dist',
+    'start:server:dist',
+    cb);
+});
+
 gulp.task('serve', cb => {
   runSequence(
     'build',
-    'env',
-    'start:server',
+    'start',
     'watch',
     cb);
 });
 
 gulp.task('serve:dist', cb => {
   runSequence(
-    'build:prod',
-    'env:prod',
-    'start:server:prod',
+    'build:dist',
+    'start:dist',
     cb);
 });
 
@@ -341,12 +352,12 @@ gulp.task('build', cb => {
     cb);
 });
 
-gulp.task('build:prod', cb => {
+gulp.task('build:dist', cb => {
   runSequence(
     'clean:out',
     'copy:extras',
-    'webpack:index:prod',
-    'webpack:app:prod',
+    'webpack:index:dist',
+    'webpack:app:dist',
     'transpile:server',
     cb);
 });
@@ -371,7 +382,7 @@ gulp.task('webpack:index', () => {
   return webpackBuilder(wpConf.dev, paths.client.index);
 });
 
-gulp.task('webpack:index:prod', () => {
+gulp.task('webpack:index:dist', () => {
   return webpackBuilder(wpConf.prod, paths.client.index);
 });
 
@@ -379,7 +390,7 @@ gulp.task('webpack:app', () => {
   return webpackBuilder(wpConf.dev, paths.client.app);
 });
 
-gulp.task('webpack:app:prod', () => {
+gulp.task('webpack:app:dist', () => {
   return webpackBuilder(wpConf.prod, paths.client.app);
 });
 
