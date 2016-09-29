@@ -1,6 +1,2 @@
 scss:
   enabled: false
-
-eslint:
-  enabled: true
-  config_file: src/node_modules/.eslintrc
