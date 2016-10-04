@@ -3,4 +3,4 @@ scss:
 
 eslint:
   enabled: true
-  config_file: src/node_modules/.eslintrc
+  config_file: .eslintrc
