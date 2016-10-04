@@ -25,11 +25,11 @@ function base() {
         test: /\.png$/,
         loader: 'file'
       },
-        { test: /\.woff$/, loader: 'url?limit=10000&minetype=font/woff' },
-        { test: /\.woff2$/, loader: 'url?limit=10000&minetype=font/woff2' },
-        { test: /\.ttf$/, loader: 'file' },
-        { test: /\.eot$/, loader: 'file' },
-        { test: /\.svg$/, loader: 'file' }
+        {test: /\.woff$/, loader: 'url?limit=10000&minetype=font/woff'},
+        {test: /\.woff2$/, loader: 'url?limit=10000&minetype=font/woff2'},
+        {test: /\.ttf$/, loader: 'file'},
+        {test: /\.eot$/, loader: 'file'},
+        {test: /\.svg$/, loader: 'file'}
       ]
     },
     plugins: [
@@ -37,17 +37,17 @@ function base() {
       new OfflinePlugin({
         caches: {
           main: ['app.html', '*.bundle.js'],
-          additional: ['*.+(woff|woff2|ttf|eot|svg)']
+          additional: ['*.+(woff|woff2|ttf|eot|svg)'],
         },
         externals: ['app.html'],
         ServiceWorker: {
-          navigateFallbackURL: '/app.html'
+          navigateFallbackURL: '/app.html',
         },
         AppCache: {
           FALLBACK: {
-            '/app.html': '/app.html'
+            '/app.html': '/app.html',
           }
-        }
+        },
       })
     ],
     externals: {},
@@ -85,7 +85,7 @@ function uglify(wc) {
 }
 
 function jsonLoader(wc) {
-  wc.module.loaders.push({ test: /\.json$/, loader: 'json' });
+  wc.module.loaders.push({test: /\.json$/, loader: 'json'});
   return wc;
 }
 
