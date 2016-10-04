@@ -1,5 +1,4 @@
 const path = require('path');
-const fs = require('fs');
 const _ = require('lodash');
 const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
@@ -8,7 +7,7 @@ const OfflinePlugin = require('offline-plugin');
 function base() {
   return {
     output: {
-      filename: '[hash].bundle.js'
+      filename: '[hash].bundle.js',
     },
     module: {
       loaders: [{
@@ -46,9 +45,9 @@ function base() {
         AppCache: {
           FALLBACK: {
             '/app.html': '/app.html',
-          }
+          },
         },
-      })
+      }),
     ],
     externals: {},
     postcss: function () {
@@ -63,9 +62,9 @@ function base() {
         'stores': 'client/app/stores',
         'sources': 'client/app/sources',
         'schemas': 'client/app/schemas',
-        'mixins': 'client/app/mixins'
-      }
-    }
+        'mixins': 'client/app/mixins',
+      },
+    },
   };
 }
 
