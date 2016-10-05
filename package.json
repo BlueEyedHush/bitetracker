@@ -4,6 +4,7 @@
   "main": "server/app.js",
   "dependencies": {
     "alt": "^0.18.4",
+    "axios": "^0.14.0",
     "babel-runtime": "^5.8.20",
     "bluebird": "^2.9.34",
     "body-parser": "^1.13.3",
