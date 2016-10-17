@@ -28,6 +28,7 @@
     "mongoose": "^4.1.2",
     "morgan": "~1.6.1",
     "normalize.css": "^4.1.1",
+    "normalizr": "^2.2.1",
     "passport": "~0.3.2",
     "passport-facebook": "^2.0.0",
     "passport-google-oauth": "~0.2.0",
