@@ -2,9 +2,13 @@ const path = require('path');
 const _ = require('lodash');
 const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
+const OfflinePlugin = require('offline-plugin');
 
 function base() {
   return {
+    output: {
+      filename: '[hash].bundle.js',
+    },
     module: {
       loaders: [{
         test: /\.jsx?$/,
@@ -27,7 +31,24 @@ function base() {
         {test: /\.svg$/, loader: 'file'}
       ]
     },
-    plugins: [],
+    plugins: [
+      // Offline plugin should be the last plugin on the list
+      new OfflinePlugin({
+        caches: {
+          main: ['app.html', '*.bundle.js'],
+          additional: ['*.+(woff|woff2|ttf|eot|svg)'],
+        },
+        externals: ['app.html'],
+        ServiceWorker: {
+          navigateFallbackURL: '/app.html',
+        },
+        AppCache: {
+          FALLBACK: {
+            '/app.html': '/app.html',
+          },
+        },
+      }),
+    ],
     externals: {},
     postcss: function () {
       return [autoprefixer];
@@ -36,14 +57,14 @@ function base() {
       extensions: ['', '.js', '.jsx', '.json'],
       alias: {
         'alt-instance': 'client/app/alt',
-        'components':   'client/app/components',
-        'actions':      'client/app/actions',
-        'stores':       'client/app/stores',
-        'sources':      'client/app/sources',
-        'schemas':      'client/app/schemas',
-        'mixins':       'client/app/mixins'
-      }
-    }
+        'components': 'client/app/components',
+        'actions': 'client/app/actions',
+        'stores': 'client/app/stores',
+        'sources': 'client/app/sources',
+        'schemas': 'client/app/schemas',
+        'mixins': 'client/app/mixins',
+      },
+    },
   };
 }
 
