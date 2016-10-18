@@ -4,7 +4,12 @@
   "env": {
     "browser": true,
     "node": true,
-    "mocha": true,
+    "mocha": true
+  },
+  "globals": {
+    "chai": true,
+    "expect": true, /* for chai */
+    "sinon": true
   },
   "rules": {
     "strict": "off",
