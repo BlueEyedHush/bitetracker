@@ -47,6 +47,7 @@ function base() {
         },
         externals: ['app.html'],
         ServiceWorker: {
+          entry: './src/node_modules/client/sw.js',
           navigateFallbackURL: '/app.html',
         },
         AppCache: {
