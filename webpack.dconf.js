@@ -54,6 +54,7 @@ function base() {
             '/app.html': '/app.html',
           },
         },
+        safeToUseOptionalCaches: true,
       }),
     ],
     externals: {},
