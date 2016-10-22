@@ -28,6 +28,7 @@
     "comma-dangle": ["error", "only-multiline"],
     "one-var": ["error", {"initialized": "never"}],
     "one-var-declaration-per-line": "off",
+    "no-prototype-builtins": "off",
 
     "import/no-unresolved": "off",
 
