@@ -30,6 +30,7 @@
     "one-var-declaration-per-line": "off",
     "no-prototype-builtins": "off",
     "no-restricted-syntax": "off",
+    "class-methods-use-this": "off",
 
     "import/no-unresolved": "off",
 
