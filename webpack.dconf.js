@@ -65,7 +65,7 @@ function base() {
         'mixins': 'client/app/mixins',
       },
     },
-    sassResources: './src/node_modules/client/assets/resources.scss',
+    sassResources: path.join(__dirname, 'src/node_modules/client/assets/resources.scss'),
   };
 }
 
