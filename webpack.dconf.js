@@ -16,7 +16,7 @@ function base() {
         include: [/src[\/\\]node_modules/]
       }, {
         test: /\.scss$/,
-        loaders: ['style', 'css', 'postcss', 'resolve-url', 'sass?sourceMap', 'sass-resources']
+        loaders: ['style', 'css', 'postcss', 'resolve-url', 'sass?sourceMap', 'sass-resources'],
       }, {
         test: /\.css$/,
         loaders: ['style', 'css', 'postcss']
