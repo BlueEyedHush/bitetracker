@@ -25,6 +25,9 @@
     "import/no-unresolved": "off",
 
     "react/prefer-es6-class": "off",
-    "react/no-multi-comp": "off"
+    "react/no-multi-comp": "off",
+    "react/jsx-closing-bracket-location": ["error", "after-props"],
+    "react/jsx-first-prop-new-line": ["error", "never"],
+    "react/jsx-indent-props": "off"
   }
 }
