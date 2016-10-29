@@ -8,6 +8,7 @@
     "bluebird": "^2.9.34",
     "body-parser": "^1.13.3",
     "bootstrap-sass": "^3.3.6",
+    "classnames": "^2.2.5",
     "composable-middleware": "^0.3.0",
     "compression": "^1.5.2",
     "connect-mongo": "^0.8.1",
