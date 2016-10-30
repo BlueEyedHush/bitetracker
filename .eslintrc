@@ -9,7 +9,11 @@
   "rules": {
     "strict": "off",
     "object-curly-spacing": ["error", "never"],
-    "no-unused-vars": ["error", { "argsIgnorePattern": "_+" }],
+    "no-unused-vars": ["error", {
+      "argsIgnorePattern": "^_" ,
+      "varsIgnorePattern": "^_",
+      "caughtErrorsIgnorePattern": "^ignore"
+    }],
     "curly": ["error", "multi-line", "consistent"],
     "global-require": "off",
     "keyword-spacing": "off",
