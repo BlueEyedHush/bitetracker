@@ -9,6 +9,7 @@
     "bluebird": "^2.9.34",
     "body-parser": "^1.13.3",
     "bootstrap-sass": "^3.3.6",
+    "classnames": "^2.2.5",
     "composable-middleware": "^0.3.0",
     "compression": "^1.5.2",
     "connect-mongo": "^0.8.1",
@@ -29,6 +30,7 @@
     "method-override": "^2.3.5",
     "mongoose": "^4.1.2",
     "morgan": "~1.6.1",
+    "node-uuid": "^1.4.7",
     "normalize.css": "^4.1.1",
     "normalizr": "^2.2.1",
     "passport": "~0.3.2",
@@ -44,10 +46,12 @@
     "request": "^2.69.0",
     "request-promise": "^2.0.0",
     "serve-favicon": "^2.3.0",
+    "susy": "^2.2.12",
     "whatwg-fetch": "^1.0.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.6",
+    "axios-mock-adapter": "^1.7.1",
     "babel": "^6.5.2",
     "babel-core": "^6.7.7",
     "babel-eslint": "^7.0.0",
@@ -131,6 +135,7 @@
     "resolve-url-loader": "^1.4.3",
     "run-sequence": "^1.1.0",
     "sass-loader": "^3.2.0",
+    "sass-resources-loader": "^1.1.0",
     "serviceworker-loader": "^0.1.0",
     "sinon": "^1.16.1",
     "sinon-chai": "^2.8.0",
@@ -154,7 +159,7 @@
   "scripts": {
     "start": "gulp start:dist",
     "test": "gulp test",
-    "postinstall": "gulp build:dist",
+    "postinstall": "[ \"$NODE_ENV\" = production ] || exit 0; gulp build:dist",
     "update-webdriver": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update"
   },
   "private": true
