@@ -14,7 +14,11 @@
   "rules": {
     "strict": "off",
     "object-curly-spacing": ["error", "never"],
-    "no-unused-vars": ["error", { "argsIgnorePattern": "_+" }],
+    "no-unused-vars": ["error", {
+      "argsIgnorePattern": "^_" ,
+      "varsIgnorePattern": "^_",
+      "caughtErrorsIgnorePattern": "^ignore"
+    }],
     "curly": ["error", "multi-line", "consistent"],
     "global-require": "off",
     "keyword-spacing": "off",
@@ -35,6 +39,9 @@
     "import/no-unresolved": "off",
 
     "react/prefer-es6-class": "off",
-    "react/no-multi-comp": "off"
+    "react/no-multi-comp": "off",
+    "react/jsx-closing-bracket-location": ["error", "after-props"],
+    "react/jsx-first-prop-new-line": ["error", "never"],
+    "react/jsx-indent-props": "off"
   }
 }
