@@ -159,7 +159,7 @@
   "scripts": {
     "start": "gulp start:dist",
     "test": "gulp test",
-    "postinstall": "gulp build:dist",
+    "postinstall": "[ \"$NODE_ENV\" == production ] || exit 0; gulp build:dist",
     "update-webdriver": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update"
   },
   "private": true
