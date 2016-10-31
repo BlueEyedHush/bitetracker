@@ -32,6 +32,13 @@ function base() {
       ]
     },
     plugins: [
+      new webpack.ProvidePlugin({
+        Promise: 'imports?this=>global!exports?global.Promise!es6-promise',
+        fetch: 'imports?this=>global!exports?global.fetch!whatwg-fetch',
+        Request: 'imports?this=>global!exports?global.Request!whatwg-fetch',
+        Response: 'imports?this=>global!exports?global.Response!whatwg-fetch',
+        Headers: 'imports?this=>global!exports?global.Headers!whatwg-fetch',
+      }),
       // Offline plugin should be the last plugin on the list
       new OfflinePlugin({
         caches: {
@@ -61,7 +68,7 @@ function base() {
         'actions': 'client/app/actions',
         'stores': 'client/app/stores',
         'sources': 'client/app/sources',
-        'schemas': 'client/app/schemas',
+        'schemas': 'client/app/proptypes/schemas',
         'mixins': 'client/app/mixins',
       },
     },

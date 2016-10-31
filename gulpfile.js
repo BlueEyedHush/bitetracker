@@ -23,6 +23,8 @@ const Instrumenter = require('isparta').Instrumenter;
 
 const argv = yargs
   .alias('b', 'browsers')
+  .alias('s', 'source')
+  .alias('t', 'target')
   .argv;
 
 var plugins = require('gulp-load-plugins')({
@@ -454,4 +456,16 @@ gulp.task('test:e2e', ['env:test', 'start:server', 'webdriver_update'], cb => {
 gulp.task('debug:webpackConf', cb => {
   console.log('=== APP DEVELOPMENT ===\n' + JSON.stringify(webpackConf(wpConf.dev, paths.client.app), null, 2));
   console.log('=== APP PRODUCTION ===\n' + JSON.stringify(webpackConf(wpConf.prod, paths.client.app), null, 2));
+});
+
+gulp.task('debug:webpack', () => {
+  const conf = {
+    entrypoint: argv.source,
+    htmlTemplate: `${clientPath}/template.html`,
+    outputPageName: 'debug.html'
+  };
+
+  return gulp.src(conf.entrypoint)
+      .pipe(webpackStream(webpackConf(wpConf.dev, conf)))
+      .pipe(gulp.dest(argv.target));
 });

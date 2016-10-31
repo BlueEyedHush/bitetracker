@@ -1,5 +1,3 @@
-'use strict';
-
 var config = browser.params;
 var UserModel = require(config.serverConfig.root + '/server/api/user/user.model');
 

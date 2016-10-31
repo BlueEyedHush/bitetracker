@@ -4,7 +4,12 @@
   "env": {
     "browser": true,
     "node": true,
-    "mocha": true,
+    "mocha": true
+  },
+  "globals": {
+    "chai": true,
+    "expect": true, /* for chai */
+    "sinon": true
   },
   "rules": {
     "strict": "off",
@@ -24,7 +29,12 @@
     "no-var": "off",
     "no-param-reassign": "off",
     "quote-props": ["error", "consistent-as-needed"],
-    "comma-dangle": ["error", "always-multiline"],
+    "comma-dangle": ["error", "only-multiline"],
+    "one-var": ["error", {"initialized": "never"}],
+    "one-var-declaration-per-line": "off",
+    "no-prototype-builtins": "off",
+    "no-restricted-syntax": "off",
+    "class-methods-use-this": "off",
 
     "import/no-unresolved": "off",
 
