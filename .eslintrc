@@ -35,6 +35,8 @@
     "no-prototype-builtins": "off",
     "no-restricted-syntax": "off",
     "class-methods-use-this": "off",
+    "func-names": "off",
+
 
     "import/no-unresolved": "off",
 
