@@ -35,7 +35,11 @@
     "no-prototype-builtins": "off",
     "no-restricted-syntax": "off",
     "class-methods-use-this": "off",
+    "block-spacing": "off",
+    "comma-spacing": "off",
+    "arrow-parens": "off",
 
+    "import/imports-first": "off",
     "import/no-unresolved": "off",
 
     "react/prefer-es6-class": "off",
