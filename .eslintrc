@@ -38,6 +38,7 @@
     "func-names": "off",
     "arrow-parens": "off",
 
+    "import/imports-first": "off",
     "import/no-unresolved": "off",
 
     "react/prefer-es6-class": "off",
