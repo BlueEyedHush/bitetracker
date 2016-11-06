@@ -16,7 +16,7 @@
     "get": true,
     "FactoryGirl": true,
     "sharedExamplesFor": true,
-    "includeSharedExamplesFor": true,
+    "includeExamplesFor": true,
     "itBehavesLike": true
   },
   "rules": {
