@@ -9,7 +9,14 @@
   "globals": {
     "chai": true,
     "expect": true, /* for chai */
-    "sinon": true
+    "sinon": true,
+    "def": true,
+    "subject": true,
+    "get": true,
+    "FactoryGirl": true,
+    "sharedExamplesFor": true,
+    "includeSharedExamplesFor": true,
+    "itBehavesLike": true
   },
   "rules": {
     "strict": "off",
