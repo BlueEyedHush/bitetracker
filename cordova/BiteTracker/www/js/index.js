@@ -11,7 +11,10 @@ var app = {
     // 'pause', 'resume', etc.
     onDeviceReady: function() {
       window.open = cordova.InAppBrowser.open
-        cordova.InAppBrowser.open('http://bitetracker.herokuapp.com', '_self', 'location=no,zoom=no');
+      var inAppBrowser = cordova.InAppBrowser.open('http://bitetracker.herokuapp.com', '_self', 'location=no,zoom=no');
+      inAppBrowser.addEventListener("exit", function(){
+        navigator.app.exitApp();
+      })
     },
 
     // Update DOM on a Received Event
