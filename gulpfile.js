@@ -1,9 +1,7 @@
 'use strict';
 
 const path = require('path');
-const union = require('lodash/union');
-const flow = require('lodash/flow');
-const partialRight = require('lodash/partialRight');
+const _ = require('lodash');
 const del = require('del');
 
 const gulp = require('gulp');
@@ -12,7 +10,6 @@ const runSequence = require('run-sequence');
 const plumber = require('gulp-plumber');
 const yargs = require('yargs');
 
-const webpack = require('webpack');
 const webpackStream = require('webpack-stream');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const wpConf = require('./webpack.dconf');
@@ -101,21 +98,8 @@ function htmlPage(wc, filename, template) {
   return wc;
 }
 
-function webpackEnv(wc) {
-  wc.plugins.unshift(new webpack.DefinePlugin({
-    'process.env': {
-      NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-    }
-  }));
-  return wc;
-}
-
 function webpackConf(baseConfig, pathsConfig) {
-  return (flow(
-    baseConfig,
-    partialRight(htmlPage, pathsConfig.outputPageName, pathsConfig.htmlTemplate),
-    webpackEnv)
-  )();
+  return (_.flow(baseConfig, _.partialRight(htmlPage, pathsConfig.outputPageName, pathsConfig.htmlTemplate)))();
 }
 
 /********************
@@ -223,13 +207,22 @@ gulp.task('start:server', () => {
   nodemon({script: serverPath, watch: serverPath}).on('log', onServerLog);
 });
 
-gulp.task('start', ['start:server']);
+gulp.task('start', cb => {
+  runSequence(
+    'env',
+    'start:server',
+    cb);
+});
 
-gulp.task('start:dist', ['start:server:dist']);
+gulp.task('start:dist', cb => {
+  runSequence(
+    'env:dist',
+    'start:server:dist',
+    cb);
+});
 
 gulp.task('serve', cb => {
   runSequence(
-    'env',
     'build',
     'start',
     'watch',
@@ -238,7 +231,6 @@ gulp.task('serve', cb => {
 
 gulp.task('serve:dist', cb => {
   runSequence(
-    'env:dist',
     'build:dist',
     'start:dist',
     cb);
@@ -290,8 +282,7 @@ gulp.task('mocha:unit', ['env:test'], () => {
 });
 
 gulp.task('mocha:integration', ['env:test'], () => {
-  return gulp.src([paths.server.test.integration, paths.server.test.finalizer],
-    {base: serverTestPath})
+  return gulp.src([paths.server.test.integration, paths.server.test.finalizer], {base: serverTestPath})
     .pipe(mocha(9002)());
 });
 
@@ -375,8 +366,7 @@ gulp.task('build:dist', cb => {
 
 gulp.task('clean:out', () => del([`${out}/**/*`], {dot: true}));
 
-gulp.task('clean:lintrubbish',
-  () => del(['./**/*_scsslint_tmp*', '!./node_modules/**/*'], {dot: true}));
+gulp.task('clean:lintrubbish', () => del(['./**/*_scsslint_tmp*', '!./node_modules/**/*'], {dot: true}));
 
 gulp.task('copy:extras', () => {
   return gulp.src(paths.client.extras, {dot: true})
@@ -407,7 +397,7 @@ gulp.task('webpack:app:dist', () => {
 });
 
 gulp.task('transpile:server', () => {
-  return gulp.src(union(paths.server.scripts, paths.server.json))
+  return gulp.src(_.union(paths.server.scripts, paths.server.json))
     .pipe(plugins.sourcemaps.init())
     .pipe(plugins.babel({
       plugins: ['transform-runtime']
@@ -418,7 +408,7 @@ gulp.task('transpile:server', () => {
 
 gulp.task('coverage:pre', () => {
   return gulp.src(paths.server.scripts)
-    // Covering files
+  // Covering files
     .pipe(plugins.istanbul({
       instrumenter: Instrumenter, // Use the isparta instrumenter (code coverage for ES6)
       includeUntested: true
@@ -476,6 +466,6 @@ gulp.task('debug:webpack', () => {
   };
 
   return gulp.src(conf.entrypoint)
-    .pipe(webpackStream(webpackConf(wpConf.dev, conf)))
-    .pipe(gulp.dest(argv.target));
+      .pipe(webpackStream(webpackConf(wpConf.dev, conf)))
+      .pipe(gulp.dest(argv.target));
 });
