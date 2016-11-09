@@ -119,7 +119,6 @@ function mocha(port) {
     },
     reporter: 'spec',
     timeout: 5000,
-    ui: 'bdd-lazy-var/global',
     require: [
       paths.server.test.initializer
     ]

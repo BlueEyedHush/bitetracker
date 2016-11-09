@@ -10,10 +10,6 @@
     "chai": true,
     "expect": true, /* for chai */
     "sinon": true,
-    "def": true,
-    "subject": true,
-    "$subject": true,
-    "get": true,
     "FactoryGirl": true,
     "sharedExamplesFor": true,
     "includeExamplesFor": true,
