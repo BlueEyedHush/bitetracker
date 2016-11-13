@@ -72,7 +72,11 @@ function base() {
         'mixins': 'client/app/mixins',
       },
     },
-    sassResources: path.join(__dirname, 'src/node_modules/client/assets/resources.scss'),
+    sassResources: [
+      path.join(__dirname, 'src/node_modules/client/assets/resources.scss'),
+      path.join(__dirname, 'src/node_modules/client/assets/_variables.scss'),
+      path.join(__dirname, 'src/node_modules/client/assets/_mixins.scss'),
+    ],
   };
 }
 
