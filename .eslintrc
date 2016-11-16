@@ -35,7 +35,8 @@
     "no-prototype-builtins": "off",
     "no-restricted-syntax": "off",
     "class-methods-use-this": "off",
-    "arrow-parens": ["warn", "as-needed"],
+    "func-names": "off",
+    "arrow-parens": "off",
 
     "import/no-unresolved": "off",
 
