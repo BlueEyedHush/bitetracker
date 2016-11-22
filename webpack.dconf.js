@@ -71,6 +71,7 @@ function base() {
         'sources': 'client/app/sources',
         'schemas': 'client/app/proptypes/schemas',
         'mixins': 'client/app/mixins',
+        'helpers': 'client/app/helpers',
       },
     },
     sassResources: [
