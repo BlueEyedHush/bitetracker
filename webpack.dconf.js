@@ -64,6 +64,7 @@ function base() {
       extensions: ['', '.js', '.jsx', '.json'],
       alias: {
         'alt-instance': 'client/app/alt',
+        'routes': 'client/app/routes',
         'components': 'client/app/components',
         'actions': 'client/app/actions',
         'stores': 'client/app/stores',
