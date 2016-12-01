@@ -66,12 +66,14 @@ function base() {
       extensions: ['', '.js', '.jsx', '.json'],
       alias: {
         'alt-instance': 'client/app/alt',
+        'routes': 'client/app/routes',
         'components': 'client/app/components',
         'actions': 'client/app/actions',
         'stores': 'client/app/stores',
         'sources': 'client/app/sources',
         'schemas': 'client/app/proptypes/schemas',
         'mixins': 'client/app/mixins',
+        'helpers': 'client/app/helpers',
       },
     },
     sassResources: [
