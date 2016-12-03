@@ -1,0 +1,17 @@
+.container button {
+  display: block;
+  margin: 0 auto;
+}
+.container p {
+  text-align: center;
+  top: auto;
+  margin: 0 auto;
+
+}
+
+.container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
