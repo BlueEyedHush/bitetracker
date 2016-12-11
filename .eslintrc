@@ -10,6 +10,10 @@
     "chai": true,
     "expect": true, /* for chai */
     "sinon": true,
+    "def": true,
+    "subject": true,
+    "$subject": true,
+    "get": true,
     "FactoryGirl": true,
     "sharedExamplesFor": true,
     "includeExamplesFor": true,
@@ -44,7 +48,6 @@
     "func-names": "off",
     "arrow-parens": "off",
 
-    "import/imports-first": "off",
     "import/no-unresolved": "off",
 
     "react/prefer-es6-class": "off",
