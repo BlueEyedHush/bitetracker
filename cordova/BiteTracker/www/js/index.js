@@ -9,11 +9,23 @@ var app = {
     //
     // Bind any cordova events here. Common events are:
     // 'pause', 'resume', etc.
+
+
+
     onDeviceReady: function() {
-      window.open = cordova.InAppBrowser.open
-      var inAppBrowser = cordova.InAppBrowser.open('http://bitetracker.herokuapp.com', '_self', 'location=no,zoom=no');
+      document.addEventListener("deviceready", onDeviceReady, false);
+      function onDeviceReady() {
+        document.addEventListener("backbutton", function (e) {
+          e.preventDefault();
+        }, false );}
+      window.open = cordova.InAppBrowser.open;
+
+      var inAppBrowser = cordova.InAppBrowser.open('http://bitetracker.herokuapp.com', '_self', 'location=no,zoom=no, hidden=yes');
       inAppBrowser.addEventListener("exit", function(){
         navigator.app.exitApp();
+      });
+      inAppBrowser.addEventListener("loadstop", function(){
+        appContainer.show();
       })
     },
 
@@ -26,8 +38,7 @@ var app = {
         listeningElement.setAttribute('style', 'display:none;');
         receivedElement.setAttribute('style', 'display:block;');
 
-	navigator.app.loadUrl('http://bitetracker.herokuapp.com', {openExternal:false});
-	console.log('Received Event: ' + id);
+        console.log('Received Event: ' + id);
     }
 };
 
