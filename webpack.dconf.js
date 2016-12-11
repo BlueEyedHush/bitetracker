@@ -47,6 +47,7 @@ function base() {
         },
         externals: ['app.html'],
         ServiceWorker: {
+          entry: './src/node_modules/client/sw.js',
           navigateFallbackURL: '/app.html',
         },
         AppCache: {
@@ -54,6 +55,7 @@ function base() {
             '/app.html': '/app.html',
           },
         },
+        safeToUseOptionalCaches: true,
       }),
     ],
     externals: {},
@@ -64,15 +66,21 @@ function base() {
       extensions: ['', '.js', '.jsx', '.json'],
       alias: {
         'alt-instance': 'client/app/alt',
+        'routes': 'client/app/routes',
         'components': 'client/app/components',
         'actions': 'client/app/actions',
         'stores': 'client/app/stores',
         'sources': 'client/app/sources',
         'schemas': 'client/app/proptypes/schemas',
         'mixins': 'client/app/mixins',
+        'helpers': 'client/app/helpers',
       },
     },
-    sassResources: path.join(__dirname, 'src/node_modules/client/assets/resources.scss'),
+    sassResources: [
+      path.join(__dirname, 'src/node_modules/client/assets/resources.scss'),
+      path.join(__dirname, 'src/node_modules/client/assets/_variables.scss'),
+      path.join(__dirname, 'src/node_modules/client/assets/_mixins.scss'),
+    ],
   };
 }
 
@@ -87,7 +95,16 @@ function sourceMaps(wc) {
 }
 
 function uglify(wc) {
-  wc.plugins.unshift(new webpack.optimize.UglifyJsPlugin());
+  wc.plugins.push(new webpack.optimize.UglifyJsPlugin());
+  return wc;
+}
+
+function env(wc) {
+  wc.plugins.unshift(new webpack.DefinePlugin({
+    'process.env': {
+      NODE_ENV: JSON.stringify('production'),
+    }
+  }));
   return wc;
 }
 
@@ -114,7 +131,7 @@ function babelRewirePlugin(wc) {
 }
 
 const dev = _.flow(base, sourceMaps);
-const prod = _.flow(base, uglify);
+const prod = _.flow(base, env, uglify);
 const karma = _.flow(base, inlineSourceMaps, jsonLoader, reactKarmaExternals, babelRewirePlugin);
 
 module.exports = {
