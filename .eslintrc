@@ -9,7 +9,15 @@
   "globals": {
     "chai": true,
     "expect": true, /* for chai */
-    "sinon": true
+    "sinon": true,
+    "def": true,
+    "subject": true,
+    "$subject": true,
+    "get": true,
+    "FactoryGirl": true,
+    "sharedExamplesFor": true,
+    "includeExamplesFor": true,
+    "itBehavesLike": true
   },
   "rules": {
     "strict": "off",
@@ -35,6 +43,8 @@
     "no-prototype-builtins": "off",
     "no-restricted-syntax": "off",
     "class-methods-use-this": "off",
+    "block-spacing": "off",
+    "comma-spacing": "off",
     "func-names": "off",
     "arrow-parens": "off",
 
