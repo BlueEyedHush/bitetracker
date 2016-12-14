@@ -16,7 +16,7 @@ function base() {
         include: [/src[\/\\]node_modules/]
       }, {
         test: /\.scss$/,
-        loaders: ['style', 'css', 'postcss', 'resolve-url', 'sass?sourceMap', 'sass-resources'],
+        loaders: ['style', 'css', 'postcss', 'resolve-url', 'sass', 'sass-resources'],
       }, {
         test: /\.css$/,
         loaders: ['style', 'css', 'postcss']
@@ -75,6 +75,12 @@ function base() {
         'mixins': 'client/app/mixins',
         'helpers': 'client/app/helpers',
       },
+    },
+    sassLoader: {
+      includePaths: [
+        './node_modules/bootstrap-sass/assets/stylesheets'
+      ],
+      sourceMap: true
     },
     sassResources: [
       path.join(__dirname, 'src/node_modules/client/assets/resources.scss'),
