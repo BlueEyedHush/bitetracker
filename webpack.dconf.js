@@ -71,6 +71,7 @@ function base() {
         'actions': 'client/app/actions',
         'stores': 'client/app/stores',
         'sources': 'client/app/sources',
+        'proptypes': 'client/app/proptypes',
         'schemas': 'client/app/proptypes/schemas',
         'mixins': 'client/app/mixins',
         'helpers': 'client/app/helpers',
